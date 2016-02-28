@@ -1,4 +1,6 @@
 /* public/script.js */
+var rePattern = /<selenium>([\s\S]+?)<\/selenium>/g;
+var seleniumCode = "";
 
 window.onload = function() {
     var converter = new showdown.Converter();
@@ -30,11 +32,26 @@ window.onload = function() {
 
     var previousMarkdownValue;          
 
+    var replacer = function(match, p1, offset, string) {
+        p1 = p1.replace(/\r?\n|\r/g,'');
+        var tmp = document.createElement("DIV");
+        tmp.innerHTML = p1;
+        p1 = tmp.textContent || tmp.innerText || "";
+        seleniumCode = seleniumCode.concat(p1);
+        // console.log(p1,offset);
+        // console.log('concat',seleniumCode);
+      return p1;
+    }
+
     // convert text area to markdown html
     var convertTextAreaToMarkdown = function(){
+        // console.log('convertTextAreaToMarkdown');
         var markdownText = pad.value;
         previousMarkdownValue = markdownText;
         html = converter.makeHtml(markdownText);
+        html.replace(rePattern, replacer);
+        
+        
         markdownArea.innerHTML = html;
     };
 
@@ -68,4 +85,15 @@ window.onload = function() {
     // convert on page load
     convertTextAreaToMarkdown();
 
+
+    var runSelenium = function () {
+        console.log('eval',seleniumCode);
+        // eval(seleniumCode);
+        
+        // driver.findElement(By.name('q')).sendKeys('webdriver');
+        // driver.findElement(By.name('btnG')).click();
+        // driver.wait(until.titleIs('webdriver - Google Search'), 1000);
+        // driver.quit();
+    }
+    $('#run').click(runSelenium);
 };
