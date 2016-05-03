@@ -1,55 +1,141 @@
-/* server.js */
-
 var express = require('express');
 var app = express();
+var fs = require("fs");
+var input, output;
+var showdown = require('showdown');
+var outputHTMLFile = 'manual.html';
+var cmdsDictionary = ['get','click','takeScreenshot','inputText']
 
-// set the view engine to ejs
-app.set('view engine', 'ejs');
+if (!process.argv[2]) {
+	console.log('Input file missing')
+	process.exit();
+}
+input = process.argv[2];
 
-// public folder to store assets
-app.use(express.static(__dirname + '/public'));
+if (!process.argv[3]) {
+	console.log('Output folder missing')
+	process.exit();
+}
+output = process.argv[3];
 
-// routes for app
-app.get('/', function(req, res) {
-  res.render('pad');
+fs.stat(input,function(err,stats){
+	if (err) {
+		console.log('Input is not a file')
+		process.exit();
+	}
 });
-app.get('/(:id)', function(req, res) {
-  res.render('pad');
+
+fs.stat(output,function(err,stats){
+	if (err) {
+		console.log('Output is not a folder')
+		process.exit();
+	}
 });
 
-// get sharejs dependencies
-var sharejs = require('share');
-require('mongodb');
+processInput(input,function (err) {
+	if (err) { throw err;}
+});
 
-// options for sharejs 
-var options = {
-  db: {type: 'mongo'},
-};
+function processInput(input, cb) {
+	fs.readFile(input, 'utf8', (err, data) => {
+	  // console.log('processInput');
+	  if (err) { return cb(err);}
+	  extractMarkdownAndSelenium(data,function (html,seleniumBlocks) {
+	  	// console.log(html);
+	  	fs.writeFile(output+'/'+outputHTMLFile,html,function (err) {
+	  		if (err) { return cb(err);}
+	  	});
+	  	execSelenium(seleniumBlocks,cb);
+	  });
+	});
+}
 
-// attach the express server to sharejs
-sharejs.server.attach(app, options);
+function extractMarkdownAndSelenium(markdownAndCode, cb){
+    // console.log('extractMarkdownAndSelenium');
+    var converter = new showdown.Converter();
+    var rePattern = /<selenium>([\s\S]+?)<\/selenium>/g;
+    // var seleniumCode="";
+    var seleniumBlocks= new Array();
+    // console.log(markdownAndCode)
+    var markdownText = markdownAndCode.replace(rePattern, function(match, p1, offset, string) {
+        // console.log(p1);
+        p1 = p1.replace(/\r?\n|\r/g,'');
 
-// webdriver
-// var fs = require('fs');
-// var webdriver = require('selenium-webdriver'),
-//     By = require('selenium-webdriver').By,
-//     until = require('selenium-webdriver').until;
+        // var tmp = document.createElement("DIV");
+        // tmp.innerHTML = p1;
+        // p1 = tmp.textContent || tmp.innerText || "";
+        // seleniumCode = seleniumCode.concat(p1);
+        seleniumBlocks.push(p1);
+        // console.log(p1,offset);
+        // console.log('concat',seleniumCode);
+      return p1;
+    });
+    
+    var html = converter.makeHtml(markdownText);
+    return cb(html,seleniumBlocks);
+}
 
-// var driver = new webdriver.Builder()
-//     .forBrowser('firefox')
-//     .build();
+function execSelenium(seleniumBlocks,cb) {
+	// console.log('execSelenium')
+	var webdriver = require('selenium-webdriver'),
+	    By = require('selenium-webdriver').By,
+	    until = require('selenium-webdriver').until;
 
-// driver.get('http://www.google.com/ncr');
-// driver.findElement(By.name('q')).sendKeys('webdriver');
-// driver.findElement(By.name('btnG')).click();
-// driver.wait(until.titleIs('webdriver - Google Search'), 4000);
-// driver.takeScreenshot().then(function(data) {
-//   name = 'ss.png';
-//   var screenshotPath = 'public/';
-//   fs.writeFileSync(screenshotPath + name, data, 'base64');
-// });
-// driver.quit();
+	var driver = new webdriver.Builder()
+	    .forBrowser('firefox')
+	    .build();
 
-// listen on port 8000 (for localhost) or the port defined for heroku
-var port = process.env.PORT || 8000;
-app.listen(port);
+	// eval(seleniumCode);
+	// console.log(seleniumCode)
+	compile(seleniumBlocks,function (err,cmds) {
+		if (err) {
+			console.log('err',err)
+		}
+		else{
+			console.log(cmds)
+			for (var i = 0; i < cmds.length; i++) {
+				console.log(cmds[i])
+				var cmd = cmds[i][0];
+				var params = cmds[i][1];
+				switch(cmd) {
+					case 'get':
+						driver.get(params[0]);
+						break;
+					case 'takeScreenshot':
+						break;
+					default:
+						break;
+				}
+			}
+		}
+	});
+	return cb(null);
+}
+
+function compile(seleniumBlocks, cb) {
+	console.log('compile')
+	var cmds = [];
+	for (var i = 0; i < seleniumBlocks.length; i++) {
+		var tokens = seleniumBlocks[i].split('##');
+		var j = 0;
+		for (var i = 0; i < tokens.length; i++) {
+			if (tokens[i]!=null && tokens[i]!='') {
+				var matches = tokens[i].match(/^(\w+)(?:=\[((?:\'\S+\'|\d+)(?:,(?:\'\S+\'|\d+))*)\])?$/)
+				if (matches && (cmdsDictionary.indexOf(matches[1]) > -1)) { // IE9
+					cmds[j] = [];
+					cmds[j][0] = matches[1];
+					cmds[j][1] = matches[2]? matches[2].replace(/["']/g, "").split(',') : [];
+					for (var k = 0; k < cmds[j][1].length; k++) {
+					}
+					j++;
+				}
+				else {
+					return cb("Invalid token: "+tokens[i])
+				}
+
+			}
+		}
+	}
+	return cb(null,cmds);
+}
+

@@ -1,0 +1,13 @@
+# titulo
+<selenium>
+##get=['http://www.google.com']
+##takeScreenshot
+</selenium>
+
+# titulo 2
+
+###a1
+
+###a2
+
+
