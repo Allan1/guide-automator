@@ -2,6 +2,7 @@
 <selenium>
 ##get=['http://www.google.com']
 ##takeScreenshot
+##get=['http://www.google.com']
 </selenium>
 
 # titulo 2
