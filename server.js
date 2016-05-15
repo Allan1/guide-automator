@@ -1,6 +1,5 @@
-var express = require('express');
-var app = express();
 var fs = require("fs");
+var path = require("path");
 var input, output;
 var showdown = require('showdown');
 var pdf = require('html-pdf');
@@ -67,7 +66,7 @@ function processInput(input, cb) {
 }
 
 function extractMarkdownAndSelenium(markdownAndCode, cb){    
-    var rePattern = /<selenium>([\s\S]+?)<\/selenium>/g;
+    var rePattern = /<automator>([\s\S]+?)<\/automator>/g;
     markdownText = markdownAndCode.replace(rePattern, function(match, p1, offset, string) {
         p1 = p1.replace(/\r?\n|\r/g,'');
         seleniumBlocks.push(p1);
@@ -83,6 +82,7 @@ function execSelenium(seleniumBlocks,cb) {
 			for (var i = 0; i < cmds.length; i++) {
 				switch(cmds[i].cmd) {
 					case 'get':
+						driver.get('https://www.google.com');
 						driver.get(cmds[i].params[0]);
 						break;
 					case 'takeScreenshot':
@@ -156,6 +156,12 @@ function execSelenium(seleniumBlocks,cb) {
 					case 'submit':
 						driver.findElement(By.css(cmds[i].params[0])).submit();
 						break;
+					case 'hover':
+						driver.findElement(By.css(cmds[i].params[0])).then(function(elem){
+							driver.actions().mouseMove(elem).perform();
+							driver.sleep(cmds[i].params[1]);
+						});
+						break;
 					default:
 						break;
 				}
@@ -191,19 +197,17 @@ function compile(seleniumBlocks, cb) {
 }
 
 function exportFiles(cb) {
-	
 	fs.stat(output+'/'+outputPDFFile, function (err, stats) {
 	  if (stats) {
 	   	fs.unlinkSync(output+'/'+outputPDFFile);
 	  }
 	});
-
 	var converter = new showdown.Converter();
 	markdownText = markdownText.replace("<replaceSelenium>","");
 	var html = converter.makeHtml(markdownText);
 	
 	var options = { 
-		base: 'file:///C:/Users/Allan/Documents/Projetos/pf/docs/', 
+		base: 'file:///'+path.resolve(output).replace(/\\/g,'/')+'/', 
 		format: 'A4',
 		quality: '100'
 	};	 
