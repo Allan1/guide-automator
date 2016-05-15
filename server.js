@@ -1,14 +1,23 @@
 var express = require('express');
 var app = express();
 var fs = require("fs");
-var async = require("async");
 var input, output;
 var showdown = require('showdown');
+var pdf = require('html-pdf');
 var outputHTMLFile = 'manual.html';
-var cmdsDictionary = ['get','click','takeScreenshot','inputText']
+var outputPDFFile = 'manual.pdf';
+var cmdsDictionary = ['get','click','takeScreenshot','inputText','findElement','scrollTo','takeScreenshotOf','fillIn','submit']
 var imageCount = 0;
 var seleniumBlocks= new Array();
 var markdownText = '';
+
+var webdriver = require('selenium-webdriver'),
+    By = require('selenium-webdriver').By,
+    until = require('selenium-webdriver').until;
+
+var driver = new webdriver.Builder()
+    .forBrowser('chrome')
+    .build();
 
 if (!process.argv[2]) {
 	console.log('Input file missing')
@@ -42,190 +51,110 @@ processInput(input,function (err) {
 
 function processInput(input, cb) {
 	fs.readFile(input, 'utf8', (err, data) => {
-	  console.log('processInput');
 	  if (err) { return cb(err);}
 	  return extractMarkdownAndSelenium(data,function (seleniumBlocks) {
 
 	  	return execSelenium(seleniumBlocks,function (err) {
 	  		if (err) { return cb(err);}
 	  		else{
-	  			return makeHtml(cb);
+	  			driver.quit().then(function () {
+	  				exportFiles(cb)
+	  			});
 	  		}
 	  	});
 	  });
 	});
 }
 
-function extractMarkdownAndSelenium(markdownAndCode, cb){
-    console.log('extractMarkdownAndSelenium');
-    
+function extractMarkdownAndSelenium(markdownAndCode, cb){    
     var rePattern = /<selenium>([\s\S]+?)<\/selenium>/g;
     markdownText = markdownAndCode.replace(rePattern, function(match, p1, offset, string) {
         p1 = p1.replace(/\r?\n|\r/g,'');
-		// var tmp = document.createElement("DIV");
-        // tmp.innerHTML = p1;
-        // p1 = tmp.textContent || tmp.innerText || "";
-        // seleniumCode = seleniumCode.concat(p1);
         seleniumBlocks.push(p1);
       	return '<replaceSelenium>';
     });
-    // console.log(markdownText)
     return cb(seleniumBlocks);
 }
 
-function execSelenium(seleniumBlocks,cb) {
-	console.log('execSelenium')
-	var webdriver = require('selenium-webdriver'),
-	    By = require('selenium-webdriver').By,
-	    until = require('selenium-webdriver').until;
-
-	var driver = new webdriver.Builder()
-	    .forBrowser('firefox')
-	    .build();
-	
+function execSelenium(seleniumBlocks,cb) {	
 	return compile(seleniumBlocks,function (err,cmds) {
 		if (err) { return cb(err);}
 		else{
-			// var i = 0;
-			// async.whilst(
-			// 	function () { return i < cmds.length; },
-			// 	function (callback) {
-			// 		console.log('i:',i);
-			// 		switch(cmds[i].cmd) {
-			// 			case 'get':
-			// 				console.log('get')
-			// 				driver.get(cmds[i].params[0]);
-			// 				break;
-			// 			case 'takeScreenshot':
-			// 				console.log('takeScreenshot')
-	  //   					var cmd = cmds[i];
-			// 				// driver.takeScreenshot().then(
-			// 				//     function(image, err) {
-			// 				//     	if (err) { return cb(err);}
-			// 				//     	else{
-			// 				//     		imageCount++;
-			// 				//         	fs.writeFile(output+'/'+imageCount+'.png', image, 'base64', function(err) {
-			// 				//             	if (err) { return cb(err);}
-			// 				// 		    	else{
-			// 				// 					console.log('takeScreenshot',markdownText)
-			// 				// 		    		var index = 0;
-			// 				// 		    		markdownText = markdownText.replace(/<replaceSelenium>/g,function (match) {
-			// 				// 	    				// console.log(index,cmd.blockIndex)
-			// 				// 		    			if( index === cmd.blockIndex ) {
-			// 				// 		    				// console.log('![Alt text]('+imageCount+'.png)')
-			// 				// 		    				return '![Alt text]('+imageCount+'.png)';
-			// 				// 		    			}
-			// 				// 		    			index++;
-	  //     					// 		  				return match;
-			// 				// 		    		});
-			// 				// 		    	}
-			// 				//         	});
-			// 				//         }
-			// 				//     }
-			// 				// );
-			// 				break;
-			// 			default:
-			// 				break;
-			// 		}
-			// 		i++;
-			// 		callback(null, i);
-			// 	},
-			// 	function (err, n) {
-			//     	console.log('err',err)
-			//     }
-			// );
-
-			// var x = 0;
-			// var loopArray = function(cmds) {
-			//     execCmd(cmds[x],function(){
-			//         // set x to next item
-			//         x++;
-
-			//         // any more items in array? continue loop
-			//         if(x < cmds.length) {
-			//             loopArray(cmds);   
-			//         }
-			//     }); 
-			// }
-			// function execCmd(cmd,callback) {
-			//     console.log(cmd);
-		 //    	switch(cmd.cmd) {
-			// 		case 'get':
-			// 			console.log('get')
-			// 			driver.get(cmd.params[0]);
-			// 			break;
-			// 		case 'takeScreenshot':
-			// 			console.log('takeScreenshot')
-   // 						// var cmd = cmds[i];
-   // 						driver.wait(function() {
-			// 				return driver.takeScreenshot().then(
-			// 				    function(image, err) {
-			// 				    	if (err) { return cb(err);}
-			// 				    	else{
-			// 				    		imageCount++;
-			// 				        	fs.writeFile(output+'/'+imageCount+'.png', image, 'base64', function(err) {
-			// 				            	if (err) { return cb(err);}
-			// 						    	else{
-			// 									console.log('takeScreenshot',markdownText)
-			// 						    		var index = 0;
-			// 						    		markdownText = markdownText.replace(/<replaceSelenium>/g,function (match) {
-			// 					    				// console.log(index,cmd.blockIndex)
-			// 						    			if( index === cmd.blockIndex ) {
-			// 						    				// console.log('![Alt text]('+imageCount+'.png)')
-			// 						    				return '![Alt text]('+imageCount+'.png)';
-			// 						    			}
-			// 						    			index++;
-	  //  												return match;
-			// 						    		});
-			// 						    	}
-			// 				        	});
-			// 				        }
-			// 				    }
-			// 				);   							
-   // 						});
-			// 			break;
-			// 		default:
-			// 			break;
-			// 	}
-
-			//     callback();
-			// }
-			// loopArray(cmds);
-			
 			for (var i = 0; i < cmds.length; i++) {
 				switch(cmds[i].cmd) {
 					case 'get':
-						console.log('get')
 						driver.get(cmds[i].params[0]);
 						break;
 					case 'takeScreenshot':
-						console.log('takeScreenshot')
-   						var cmd = cmds[i];
-   						markdownText = markdownText.replace(/<replaceSelenium>/g,function (match) {
-		    				// console.log(index,cmd.blockIndex)
-			    			if( index === cmd.blockIndex ) {
-			    				// console.log('![Alt text]('+imageCount+'.png)')
-			    				return '![Alt text]('+imageCount+'.png)';
-			    			}
-			    			index++;
-								return match;
-			    		});
+						var cmd = cmds[i];
+ 						var index = 0;
+ 						markdownText = markdownText.replace(/<replaceSelenium>/g,function (match) {
+	    				if( index === cmd.blockIndex ) {
+		    				imageCount++;
+	    					return '![Alt text]('+imageCount+'.png)';
+		    			}
+		    			index++;
+							return match;
+		    		});
 						driver.takeScreenshot().then(
-						    function(image, err) {
-						    	if (err) { return cb(err);}
-						    	else{
-						    		imageCount++;
+					    function(image, err) {
+					    	if (err) { return cb(err);}
+					    	else{
+				        	fs.writeFile(output+'/'+imageCount+'.png', image, 'base64', function(err) {
+			            	if (err) { return cb(err);}
+						    	});
+				        }
+					    }
+						);
+						break;
+					case 'takeScreenshotOf':
+						var cmd = cmds[i];
+ 						var index = 0;
+ 						markdownText = markdownText.replace(/<replaceSelenium>/g,function (match) {
+		    			if( index === cmd.blockIndex ) {
+	    					imageCount++;
+		    				return '![Alt text]('+imageCount+'.png)';
+		    			}
+		    			index++;
+							return match;
+		    		});
+						driver.findElement(By.css(cmds[i].params[0])).then(function(el) {
+			    		el.getLocation().then(function (position) {
+			    			driver.touchActions().scroll({x:-3000,y:-3000}).scroll({x:position.x,y:position.y}).perform();
+								driver.takeScreenshot().then(
+							    function(image, err) {
+							    	if (err) { return cb(err);}
+							    	else{
 						        	fs.writeFile(output+'/'+imageCount+'.png', image, 'base64', function(err) {
-						            	if (err) { return cb(err);}
-								    	else{
-											console.log('takeScreenshot',markdownText)
-								    		var index = 0;
-								    		
-								    	}
+					            	if (err) { return cb(err);}
 						        	});
 						        }
-						    }
-						);
+							    }
+								);
+							})
+					 	});
+						break;
+					case 'findElement':
+						driver.findElement(By.css(cmds[i].params[0])).then(function(el) {
+							
+					 	});
+						break;
+					case 'scrollTo':
+						console.log('scrollTo')
+						// driver.findElement(By.css(cmds[i].params[0])).then(function(el) {
+						// 	el.getLocation().then(function (position) {
+						// 		driver.touchActions().scroll({x:position.x,y:position.y}).perform();
+						// 	})
+					 // 	});
+						break;
+					case 'getText':
+						var text = driver.findElement(By.css(cmds[i].params[0])).getText();
+						break;
+					case 'fillIn':
+						driver.findElement(By.css(cmds[i].params[0])).sendKeys(cmds[i].params[1]);
+						break;
+					case 'submit':
+						driver.findElement(By.css(cmds[i].params[0])).submit();
 						break;
 					default:
 						break;
@@ -234,15 +163,13 @@ function execSelenium(seleniumBlocks,cb) {
 		}
 		return cb(null);
 	});
-	// return cb(null);
 }
 
 function compile(seleniumBlocks, cb) {
-	console.log('compile')
 	var cmds = [];
+	var j = 0;
 	for (var i = 0; i < seleniumBlocks.length; i++) {
 		var tokens = seleniumBlocks[i].split('##');
-		var j = 0;
 		for (var o = 0; o < tokens.length; o++) {
 			if (tokens[o]!=null && tokens[o]!='') {
 				var matches = tokens[o].match(/^(\w+)(?:=\[((?:\'\S+\'|\d+)(?:,(?:\'\S+\'|\d+))*)\])?$/)
@@ -263,13 +190,29 @@ function compile(seleniumBlocks, cb) {
 	return cb(null,cmds);
 }
 
-function makeHtml(cb) {
+function exportFiles(cb) {
+	
+	fs.stat(output+'/'+outputPDFFile, function (err, stats) {
+	  if (stats) {
+	   	fs.unlinkSync(output+'/'+outputPDFFile);
+	  }
+	});
+
 	var converter = new showdown.Converter();
-	console.log('last',markdownText)
-	// markdownText = markdownText.replace("<replaceSelenium>","");
+	markdownText = markdownText.replace("<replaceSelenium>","");
 	var html = converter.makeHtml(markdownText);
+	
+	var options = { 
+		base: 'file:///C:/Users/Allan/Documents/Projetos/pf/docs/', 
+		format: 'A4',
+		quality: '100'
+	};	 
+	pdf.create(html, options).toFile(output+'/'+outputPDFFile, function(err, res) {
+	  if (err) return cb(err);
+	});
+		
 	fs.writeFile(output+'/'+outputHTMLFile,html,function (err) {
-  		if (err) { return cb(err);}
-  	});
-  	return cb(null);
+		if (err) { return cb(err);}
+	});
+	return cb(null);
 }

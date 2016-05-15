@@ -1,11 +1,24 @@
-# titulo
+# Main page of Moodle UFBA
 <selenium>
-##get=['http://www.google.com']
+##get=['http://www.novomoodle.ufba.br']
 ##takeScreenshot
-##get=['http://www.google.com']
 </selenium>
 
-# titulo 2
+# Filling in the login form
+<selenium>
+##fillIn=['#login_username','username']
+##fillIn=['#login_password','123']
+##takeScreenshotOf=['#inst15']
+</selenium>
+
+# Dashboard
+
+<selenium>
+##submit=['#login']
+##takeScreenshot
+</selenium>
+
+
 
 ###a1
 
