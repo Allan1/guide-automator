@@ -9,11 +9,10 @@
   "author": "Allan Oliveira",
   "license": "ISC",
   "dependencies": {
-    "ejs": "^2.3.1",
     "express": "^4.12.4",
-    "mongodb": "^2.1.7",
-    "selenium-webdriver": "^2.52.0",
-    "share": "0.6.3"
+    "selenium-webdriver": "2.53.1",
+    "showdown": "1.4.0",
+    "html-pdf": "2.0.1"
   },
   "engines": {
     "node": "0.10.x",
