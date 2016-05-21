@@ -1,21 +1,21 @@
 # Main page of Moodle UFBA
 <automator>
-##get=['http://www.novomoodle.ufba.br']
-##takeScreenshot
+get('http://www.novomoodle.ufba.br');
+takeScreenshot;
 </automator>
 
-# Filling in the login form
+# Filling in the login form with credentials
 <automator>
-##fillIn=['#login_username','username']
-##fillIn=['#login_password','123']
-##takeScreenshotOf=['#inst15']
+fillIn('#login_username','username');
+fillIn('#login_password','123456');
+takeScreenshotOf('#inst15');
 </automator>
 
 # Dashboard
 
 <automator>
-##submit=['#login']
-##takeScreenshot
+submit('#login');
+takeScreenshot;
 </automator>
 
 

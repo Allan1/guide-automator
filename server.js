@@ -68,6 +68,7 @@ function processInput(input, cb) {
 function extractMarkdownAndSelenium(markdownAndCode, cb){    
     var rePattern = /<automator>([\s\S]+?)<\/automator>/g;
     markdownText = markdownAndCode.replace(rePattern, function(match, p1, offset, string) {
+    	// console.log(match.split(/\r\n|\r|\n/).length,p1,offset)
         p1 = p1.replace(/\r?\n|\r/g,'');
         seleniumBlocks.push(p1);
       	return '<replaceSelenium>';
@@ -82,7 +83,6 @@ function execSelenium(seleniumBlocks,cb) {
 			for (var i = 0; i < cmds.length; i++) {
 				switch(cmds[i].cmd) {
 					case 'get':
-						driver.get('https://www.google.com');
 						driver.get(cmds[i].params[0]);
 						break;
 					case 'takeScreenshot':
@@ -175,10 +175,10 @@ function compile(seleniumBlocks, cb) {
 	var cmds = [];
 	var j = 0;
 	for (var i = 0; i < seleniumBlocks.length; i++) {
-		var tokens = seleniumBlocks[i].split('##');
+		var tokens = seleniumBlocks[i].split(';');
 		for (var o = 0; o < tokens.length; o++) {
 			if (tokens[o]!=null && tokens[o]!='') {
-				var matches = tokens[o].match(/^(\w+)(?:=\[((?:\'\S+\'|\d+)(?:,(?:\'\S+\'|\d+))*)\])?$/)
+				var matches = tokens[o].match(/^(\w+)(?:\(((?:\'\S+\'|\d+)(?:,(?:\'\S+\'|\d+))*)\))?$/)
 				if (matches && (cmdsDictionary.indexOf(matches[1]) > -1)) { // IE9
 					cmds[j] = {};
 					cmds[j].cmd = matches[1];
@@ -189,7 +189,6 @@ function compile(seleniumBlocks, cb) {
 				else {
 					return cb("Invalid token: "+tokens[o])
 				}
-
 			}
 		}
 	}
