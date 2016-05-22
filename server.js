@@ -18,6 +18,10 @@ var driver = new webdriver.Builder()
     .forBrowser('chrome')
     .build();
 
+exports.printMsg = function() {
+  console.log("This is a message from the demo package");
+}
+
 if (!process.argv[2]) {
 	console.log('Input file missing')
 	process.exit();
