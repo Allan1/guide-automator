@@ -1,13 +1,21 @@
 {
-  "name": "pf",
+  "name": "guide-automator",
   "version": "1.0.0",
-  "description": "real time markdown viewer",
+  "description": "User guide automator",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Allan Oliveira",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Allan1/projetofinal.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Allan1/projetofinal/issues"
+  },
+  "homepage": "https://github.com/Allan1/projetofinal",
   "dependencies": {
     "express": "^4.12.4",
     "selenium-webdriver": "2.53.1",
