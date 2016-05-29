@@ -7,8 +7,8 @@ var showdown = require('showdown');
 var pdf = require('html-pdf');
 var outputHTMLFile = 'manual.html';
 var outputPDFFile = 'manual.pdf';
-var cmdsDictionary = ['get','click','takeScreenshot','inputText','findElement','scrollTo','takeScreenshotOf','fillIn','submit']
-var imageCount = 0;
+var cmdsDictionary = ['get','click','takeScreenshot','scrollTo','takeScreenshotOf','fillIn','submit']
+var imageCount = imageCountSel = 0;
 var seleniumBlocks= new Array();
 var markdownText = '';
 
@@ -58,12 +58,11 @@ function processInput(input, cb) {
 	fs.readFile(input, 'utf8', (err, data) => {
 	  if (err) { return cb(err);}
 	  return extractMarkdownAndSelenium(data,function (seleniumBlocks) {
-
 	  	return execSelenium(seleniumBlocks,function (err) {
 	  		if (err) { return cb(err);}
 	  		else{
 	  			driver.quit().then(function () {
-	  				exportFiles(cb)
+	  				clearAndExportFiles(cb)
 	  			});
 	  		}
 	  	});
@@ -74,10 +73,9 @@ function processInput(input, cb) {
 function extractMarkdownAndSelenium(markdownAndCode, cb){    
     var rePattern = /<automator>([\s\S]+?)<\/automator>/g;
     markdownText = markdownAndCode.replace(rePattern, function(match, p1, offset, string) {
-    	// console.log(match.split(/\r\n|\r|\n/).length,p1,offset)
-        p1 = p1.replace(/\r?\n|\r/g,'');
-        seleniumBlocks.push(p1);
-      	return '<replaceSelenium>';
+  	  p1 = p1.replace(/\r?\n|\r/g,'');
+      seleniumBlocks.push(p1);
+    	return '<replaceSelenium>';
     });
     return cb(seleniumBlocks);
 }
@@ -93,60 +91,60 @@ function execSelenium(seleniumBlocks,cb) {
 						break;
 					case 'takeScreenshot':
 						var cmd = cmds[i];
+ 						imageCount++;
  						var index = 0;
  						markdownText = markdownText.replace(/<replaceSelenium>/g,function (match) {
-	    				if( index === cmd.blockIndex ) {
-		    				imageCount++;
-	    					return '![Alt text]('+imageCount+'.png)';
+ 							index++;
+		    			if( (index-1) === cmd.blockIndex ) {
+	    					return '<replaceSelenium>![]('+imageCount+'.png)';
 		    			}
-		    			index++;
 							return match;
 		    		});
-						driver.takeScreenshot().then(
+ 						driver.takeScreenshot().then(
 					    function(image, err) {
+					    	imageCountSel++;
 					    	if (err) { return cb(err);}
 					    	else{
-				        	fs.writeFile(output+'/'+imageCount+'.png', image, 'base64', function(err) {
-			            	if (err) { return cb(err);}
-						    	});
+					    		if (fs.statSync(output+'/'+imageCountSel+'.png')) {
+									  fs.unlinkSync(output+'/'+imageCountSel+'.png');
+									}
+									fs.writeFileSync(output+'/'+imageCountSel+'.png', image, 'base64');
 				        }
 					    }
 						);
 						break;
 					case 'takeScreenshotOf':
 						var cmd = cmds[i];
+ 						imageCount++;
  						var index = 0;
  						markdownText = markdownText.replace(/<replaceSelenium>/g,function (match) {
-		    			if( index === cmd.blockIndex ) {
-	    					imageCount++;
-		    				return '![Alt text]('+imageCount+'.png)';
+ 							index++;
+		    			if( (index-1) === cmd.blockIndex ) {
+	    					return '<replaceSelenium>![]('+imageCount+'.png)';
 		    			}
-		    			index++;
 							return match;
 		    		});
 						driver.findElement(By.css(cmds[i].params[0])).then(function(el) {
 			    		el.getLocation().then(function (position) {
-			    			driver.touchActions().scroll({x:-3000,y:-3000}).scroll({x:position.x,y:position.y}).perform();
+			    			driver.touchActions().scroll({x:-3000,y:-3000}).scroll({x:Math.round(position.x),y:Math.round(position.y)}).perform();
 								driver.takeScreenshot().then(
 							    function(image, err) {
+							    	imageCountSel++;
 							    	if (err) { return cb(err);}
 							    	else{
-						        	fs.writeFile(output+'/'+imageCount+'.png', image, 'base64', function(err) {
-					            	if (err) { return cb(err);}
-						        	});
+							    		fs.stat(output+'/'+imageCountSel+'.png', function (err, stats) {
+											  if (stats) {
+											   	fs.unlinkSync(output+'/'+imageCountSel+'.png');
+											  }
+							        	fs.writeFileSync(output+'/'+imageCountSel+'.png', image, 'base64');
+											});
 						        }
 							    }
 								);
 							})
 					 	});
 						break;
-					case 'findElement':
-						driver.findElement(By.css(cmds[i].params[0])).then(function(el) {
-							
-					 	});
-						break;
 					case 'scrollTo':
-						console.log('scrollTo')
 						// driver.findElement(By.css(cmds[i].params[0])).then(function(el) {
 						// 	el.getLocation().then(function (position) {
 						// 		driver.touchActions().scroll({x:position.x,y:position.y}).perform();
@@ -154,7 +152,7 @@ function execSelenium(seleniumBlocks,cb) {
 					 // 	});
 						break;
 					case 'getText':
-						var text = driver.findElement(By.css(cmds[i].params[0])).getText();
+						// var text = driver.findElement(By.css(cmds[i].params[0])).getText();
 						break;
 					case 'fillIn':
 						driver.findElement(By.css(cmds[i].params[0])).sendKeys(cmds[i].params[1]);
@@ -162,11 +160,14 @@ function execSelenium(seleniumBlocks,cb) {
 					case 'submit':
 						driver.findElement(By.css(cmds[i].params[0])).submit();
 						break;
+					case 'click':
+						driver.findElement(By.css(cmds[i].params[0])).click();
+						break;
 					case 'hover':
-						driver.findElement(By.css(cmds[i].params[0])).then(function(elem){
-							driver.actions().mouseMove(elem).perform();
-							driver.sleep(cmds[i].params[1]);
-						});
+						// driver.findElement(By.css(cmds[i].params[0])).then(function(elem){
+						// 	driver.actions().mouseMove(elem).perform();
+						// 	driver.sleep(cmds[i].params[1]);
+						// });
 						break;
 					default:
 						break;
@@ -184,7 +185,7 @@ function compile(seleniumBlocks, cb) {
 		var tokens = seleniumBlocks[i].split(';');
 		for (var o = 0; o < tokens.length; o++) {
 			if (tokens[o]!=null && tokens[o]!='') {
-				var matches = tokens[o].match(/^(\w+)(?:\(((?:\'\S+\'|\d+)(?:,(?:\'\S+\'|\d+))*)\))?$/)
+				var matches = tokens[o].match(/^(\w+)(?:\(((?:\'.+\'|\d+)(?:,(?:\'.+\'|\d+))*)\))?$/)
 				if (matches && (cmdsDictionary.indexOf(matches[1]) > -1)) { // IE9
 					cmds[j] = {};
 					cmds[j].cmd = matches[1];
@@ -201,15 +202,18 @@ function compile(seleniumBlocks, cb) {
 	return cb(null,cmds);
 }
 
-function exportFiles(cb) {
+function clearAndExportFiles(cb) {
 	fs.stat(output+'/'+outputPDFFile, function (err, stats) {
 	  if (stats) {
 	   	fs.unlinkSync(output+'/'+outputPDFFile);
 	  }
 	});
+	return exportFiles(markdownText.replace(/<replaceSelenium>/g,""),cb);
+}
+
+function exportFiles(text,cb) {
 	var converter = new showdown.Converter();
-	markdownText = markdownText.replace("<replaceSelenium>","");
-	var html = converter.makeHtml(markdownText);
+	var html = converter.makeHtml(text);
 	
 	var options = { 
 		base: 'file:///'+path.resolve(output).replace(/\\/g,'/')+'/', 
@@ -220,8 +224,6 @@ function exportFiles(cb) {
 	  if (err) return cb(err);
 	});
 		
-	fs.writeFile(output+'/'+outputHTMLFile,html,function (err) {
-		if (err) { return cb(err);}
-	});
+	fs.writeFileSync(output+'/'+outputHTMLFile,html);
 	return cb(null);
 }
