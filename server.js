@@ -105,10 +105,12 @@ function execSelenium(seleniumBlocks,cb) {
 					    	imageCountSel++;
 					    	if (err) { return cb(err);}
 					    	else{
-					    		if (fs.statSync(output+'/'+imageCountSel+'.png')) {
-									  fs.unlinkSync(output+'/'+imageCountSel+'.png');
-									}
-									fs.writeFileSync(output+'/'+imageCountSel+'.png', image, 'base64');
+					    		fs.stat(output+'/'+imageCountSel+'.png', function (err, stats) {
+									  if (stats) {
+									   	fs.unlinkSync(output+'/'+imageCountSel+'.png');
+									  }
+									  fs.writeFileSync(output+'/'+imageCountSel+'.png', image, 'base64');
+									});
 				        }
 					    }
 						);
@@ -136,7 +138,7 @@ function execSelenium(seleniumBlocks,cb) {
 											  if (stats) {
 											   	fs.unlinkSync(output+'/'+imageCountSel+'.png');
 											  }
-							        	fs.writeFileSync(output+'/'+imageCountSel+'.png', image, 'base64');
+											  fs.writeFileSync(output+'/'+imageCountSel+'.png', image, 'base64');
 											});
 						        }
 							    }
