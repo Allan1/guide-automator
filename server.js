@@ -157,7 +157,9 @@ function execSelenium(seleniumBlocks,cb) {
 						// var text = driver.findElement(By.css(cmds[i].params[0])).getText();
 						break;
 					case 'fillIn':
-						driver.findElement(By.css(cmds[i].params[0])).sendKeys(cmds[i].params[1]);
+						el = driver.findElement(By.css(cmds[i].params[0]));
+						el.clear();
+						el.sendKeys(cmds[i].params[1]);
 						break;
 					case 'submit':
 						driver.findElement(By.css(cmds[i].params[0])).submit();
