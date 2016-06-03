@@ -11,6 +11,9 @@ var cmdsDictionary = ['get','click','takeScreenshot','scrollTo','takeScreenshotO
 var imageCount = imageCountSel = 0;
 var seleniumBlocks= new Array();
 var markdownText = '';
+var converter = new showdown.Converter({parseImgDimensions:true});
+var html_start = '<!DOCTYPE html><html lang="en"><head><title></title><meta charset="UTF-8"></head><body>';
+var html_end = '</body></html>';
 
 var webdriver = require('selenium-webdriver'),
     By = require('selenium-webdriver').By,
@@ -96,7 +99,7 @@ function execSelenium(seleniumBlocks,cb) {
  						markdownText = markdownText.replace(/<replaceSelenium>/g,function (match) {
  							index++;
 		    			if( (index-1) === cmd.blockIndex ) {
-	    					return '<replaceSelenium>![]('+imageCount+'.png)';
+	    					return '<replaceSelenium>![]('+imageCount+'.png =80%x*)';
 		    			}
 							return match;
 		    		});
@@ -122,7 +125,7 @@ function execSelenium(seleniumBlocks,cb) {
  						markdownText = markdownText.replace(/<replaceSelenium>/g,function (match) {
  							index++;
 		    			if( (index-1) === cmd.blockIndex ) {
-	    					return '<replaceSelenium>![]('+imageCount+'.png)';
+	    					return '<replaceSelenium>![]('+imageCount+'.png =80%x*)';
 		    			}
 							return match;
 		    		});
@@ -216,8 +219,8 @@ function clearAndExportFiles(cb) {
 }
 
 function exportFiles(text,cb) {
-	var converter = new showdown.Converter();
-	var html = converter.makeHtml(text);
+	
+	var html = html_start+converter.makeHtml(text)+html_end;
 	
 	var options = { 
 		base: 'file:///'+path.resolve(output).replace(/\\/g,'/')+'/', 
