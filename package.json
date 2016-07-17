@@ -21,9 +21,10 @@
   "homepage": "https://github.com/Allan1/projetofinal",
   "dependencies": {
     "express": "^4.12.4",
-    "selenium-webdriver": "2.53.1",
-    "showdown": "1.4.0",
-    "html-pdf": "2.0.1"
+    "gm": "^1.22.0",
+    "html-pdf": "2.0.1",
+    "selenium-webdriver": "2.53.3",
+    "showdown": "1.4.0"
   },
   "engines": {
     "node": "0.10.x",
