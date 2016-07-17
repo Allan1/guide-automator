@@ -2,9 +2,10 @@
 
 var fs = require("fs");
 var path = require("path");
-var input, output;
 var showdown = require('showdown');
 var pdf = require('html-pdf');
+var gm = require('gm').subClass({imageMagick: true});
+var input, output;
 var outputHTMLFile = 'manual.html';
 var outputPDFFile = 'manual.pdf';
 var cmdsDictionary = ['get','click','takeScreenshot','scrollTo','takeScreenshotOf','fillIn','submit']
@@ -14,6 +15,8 @@ var markdownText = '';
 var converter = new showdown.Converter({parseImgDimensions:true});
 var html_start = '<!DOCTYPE html><html lang="en"><head><title></title><meta charset="UTF-8"></head><body>';
 var html_end = '</body></html>';
+var outline_style = 'solid red 3px';
+// var outline_style = 'solid rgba(0,0,0,0.8) 2000px';
 
 var webdriver = require('selenium-webdriver'),
     By = require('selenium-webdriver').By,
@@ -96,10 +99,14 @@ function execSelenium(seleniumBlocks,cb) {
 						var cmd = cmds[i];
  						imageCount++;
  						var index = 0;
+ 						var width = '60%';
+ 						if (cmd.params.length > 1) {
+ 							width = cmd.params[1];
+ 						}
  						markdownText = markdownText.replace(/<replaceSelenium>/g,function (match) {
  							index++;
 		    			if( (index-1) === cmd.blockIndex ) {
-	    					return '<replaceSelenium>![]('+imageCount+'.png =80%x*)';
+	    					return '<replaceSelenium>![]('+imageCount+'.png ='+width+'x*)';
 		    			}
 							return match;
 		    		});
@@ -122,18 +129,29 @@ function execSelenium(seleniumBlocks,cb) {
 						var cmd = cmds[i];
  						imageCount++;
  						var index = 0;
+ 						var width = '60%';
+ 						if (!cmd.params.length) {
+ 							console.log("Missing param for takeScreenshotOf")
+ 							return cb(null);
+ 						}
+ 						if (cmd.params.length > 1) {
+ 							width = cmd.params[1];
+ 						}
+
  						markdownText = markdownText.replace(/<replaceSelenium>/g,function (match) {
  							index++;
 		    			if( (index-1) === cmd.blockIndex ) {
-	    					return '<replaceSelenium>![]('+imageCount+'.png =80%x*)';
+	    					return '<replaceSelenium>![]('+imageCount+'.png ='+width+'x*)';
 		    			}
 							return match;
 		    		});
 						driver.findElement(By.css(cmds[i].params[0])).then(function(el) {
+							driver.executeScript("arguments[0].style.outline = '"+outline_style+"'",el);
 			    		el.getLocation().then(function (position) {
 			    			driver.touchActions().scroll({x:-3000,y:-3000}).scroll({x:Math.round(position.x),y:Math.round(position.y)}).perform();
 								driver.takeScreenshot().then(
 							    function(image, err) {
+							    	driver.executeScript("arguments[0].style.outline = ''",el);
 							    	imageCountSel++;
 							    	if (err) { return cb(err);}
 							    	else{
