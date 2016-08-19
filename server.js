@@ -5,11 +5,11 @@ var path = require("path");
 var showdown = require('showdown');
 var pdf = require('html-pdf');
 var gm = require('gm').subClass({imageMagick: true});
-var input, output;
+var input, output, imgOutDir;
 var outputHTMLFile = 'manual.html';
 var outputPDFFile = 'manual.pdf';
-var cmdsDictionary = ['get','click','takeScreenshot','scrollTo','takeScreenshotOf','fillIn','submit']
-var imageCount = imageCountSel = 0;
+var cmdsDictionary = ['get','click','takeScreenshot','scrollTo','takeScreenshotOf','fillIn','submit','wait','sleep']
+var imgCount = imgCountSel = 0;
 var seleniumBlocks= new Array();
 var markdownText = '';
 var converter = new showdown.Converter({parseImgDimensions:true});
@@ -41,6 +41,8 @@ if (!process.argv[3]) {
 	process.exit();
 }
 output = process.argv[3];
+imgOutDir = path.join(process.argv[3],'/img/');
+console.log(imgOutDir)
 
 fs.stat(input,function(err,stats){
 	if (err) {
@@ -97,7 +99,7 @@ function execSelenium(seleniumBlocks,cb) {
 						break;
 					case 'takeScreenshot':
 						var cmd = cmds[i];
- 						imageCount++;
+ 						imgCount++;
  						var index = 0;
  						var width = '60%';
  						if (cmd.params.length > 1) {
@@ -106,20 +108,20 @@ function execSelenium(seleniumBlocks,cb) {
  						markdownText = markdownText.replace(/<replaceSelenium>/g,function (match) {
  							index++;
 		    			if( (index-1) === cmd.blockIndex ) {
-	    					return '<replaceSelenium>![]('+imageCount+'.png ='+width+'x*)';
+	    					return '<replaceSelenium>![]('+imgCount+'.png ='+width+'x*)';
 		    			}
 							return match;
 		    		});
  						driver.takeScreenshot().then(
 					    function(image, err) {
-					    	imageCountSel++;
+					    	imgCountSel++;
 					    	if (err) { return cb(err);}
 					    	else{
-					    		fs.stat(output+'/'+imageCountSel+'.png', function (err, stats) {
+					    		fs.stat(output+'/'+imgCountSel+'.png', function (err, stats) {
 									  if (stats) {
-									   	fs.unlinkSync(output+'/'+imageCountSel+'.png');
+									   	fs.unlinkSync(output+'/'+imgCountSel+'.png');
 									  }
-									  fs.writeFileSync(output+'/'+imageCountSel+'.png', image, 'base64');
+									  fs.writeFileSync(output+'/'+imgCountSel+'.png', image, 'base64');
 									});
 				        }
 					    }
@@ -127,7 +129,7 @@ function execSelenium(seleniumBlocks,cb) {
 						break;
 					case 'takeScreenshotOf':
 						var cmd = cmds[i];
- 						imageCount++;
+ 						imgCount++;
  						var index = 0;
  						var width = '60%';
  						if (!cmd.params.length) {
@@ -141,7 +143,7 @@ function execSelenium(seleniumBlocks,cb) {
  						markdownText = markdownText.replace(/<replaceSelenium>/g,function (match) {
  							index++;
 		    			if( (index-1) === cmd.blockIndex ) {
-	    					return '<replaceSelenium>![]('+imageCount+'.png ='+width+'x*)';
+	    					return '<replaceSelenium>![]('+imgCount+'.png ='+width+'x*)';
 		    			}
 							return match;
 		    		});
@@ -152,14 +154,14 @@ function execSelenium(seleniumBlocks,cb) {
 								driver.takeScreenshot().then(
 							    function(image, err) {
 							    	driver.executeScript("arguments[0].style.outline = ''",el);
-							    	imageCountSel++;
+							    	imgCountSel++;
 							    	if (err) { return cb(err);}
 							    	else{
-							    		fs.stat(output+'/'+imageCountSel+'.png', function (err, stats) {
+							    		fs.stat(output+'/'+imgCountSel+'.png', function (err, stats) {
 											  if (stats) {
-											   	fs.unlinkSync(output+'/'+imageCountSel+'.png');
+											   	fs.unlinkSync(output+'/'+imgCountSel+'.png');
 											  }
-											  fs.writeFileSync(output+'/'+imageCountSel+'.png', image, 'base64');
+											  fs.writeFileSync(output+'/'+imgCountSel+'.png', image, 'base64');
 											});
 						        }
 							    }
@@ -178,9 +180,8 @@ function execSelenium(seleniumBlocks,cb) {
 						// var text = driver.findElement(By.css(cmds[i].params[0])).getText();
 						break;
 					case 'fillIn':
-						el = driver.findElement(By.css(cmds[i].params[0]));
-						el.clear();
-						el.sendKeys(cmds[i].params[1]);
+						driver.findElement(By.css(cmds[i].params[0])).clear();
+						driver.findElement(By.css(cmds[i].params[0])).sendKeys(cmds[i].params[1]);
 						break;
 					case 'submit':
 						driver.findElement(By.css(cmds[i].params[0])).submit();
@@ -193,6 +194,17 @@ function execSelenium(seleniumBlocks,cb) {
 						// 	driver.actions().mouseMove(elem).perform();
 						// 	driver.sleep(cmds[i].params[1]);
 						// });
+						break;
+					case 'sleep':
+						driver.sleep(parseInt(cmds[i].params[0]));
+						break;
+					case 'wait':
+						if (cmd.params.length > 1) {
+ 							timeout = cmd.params[1];
+ 						}
+ 						else
+ 							timeout = 10000;
+						driver.wait(until.elementLocated(By.id(cmds[i].params[0])), timeout);
 						break;
 					default:
 						break;
