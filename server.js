@@ -3,7 +3,6 @@
 var fs = require("fs");
 var path = require("path");
 var showdown = require('showdown');
-var pdf = require('html-pdf');
 var gm = require('gm').subClass({imageMagick: true});
 var wkhtmltopdf = require('wkhtmltopdf');
 var input, output, imgOutDir;
@@ -151,21 +150,23 @@ function execSelenium(seleniumBlocks,cb) {
 		    		});
 						driver.findElement(By.css(cmds[i].params[0])).then(function(el) {
 							driver.executeScript("arguments[0].style.outline = '"+outline_style+"'",el);
-			    		el.getLocation().then(function (position) {
-			    			driver.touchActions().scroll({x:-3000,y:-3000}).scroll({x:Math.round(position.x),y:Math.round(position.y)}).perform();
+							driver.executeScript("return arguments[0].getBoundingClientRect()",el).then(function (rect) {
 								driver.takeScreenshot().then(
 							    function(image, err) {
 							    	driver.executeScript("arguments[0].style.outline = ''",el);
 							    	imgCountSel++;
-							    	if (err) { return cb(err);}
-							    	else{
-							    		fs.stat(output+'/'+imgCountSel+'.png', function (err, stats) {
-											  if (stats) {
-											   	fs.unlinkSync(output+'/'+imgCountSel+'.png');
-											  }
-											  fs.writeFileSync(output+'/'+imgCountSel+'.png', image, 'base64');
-											});
-						        }
+							    	fs.stat(output+'/'+imgCountSel+'.png', function (err, stats) {
+										  if (stats) {
+										   	fs.unlinkSync(output+'/'+imgCountSel+'.png');
+										  }
+										});
+										var img = new Buffer(image, 'base64');
+							    	gm(img)
+							    		.crop(rect.width,rect.height,rect.left, rect.top)
+							    		.write(output+'/'+imgCountSel+'.png',function (err) {
+							    			if (err)
+							    				return cb(err);
+							    		});
 							    }
 								);
 							})
@@ -255,15 +256,6 @@ function exportFiles(text,cb) {
 	var html = html_start+converter.makeHtml(text)+html_end;
 	
 	var basePath = 'file:///'+path.resolve(output).replace(/\\/g,'/')+'/';
-	// output pdf
-	// var options = { 
-	// 	base: basePath, 
-	// 	format: 'A4',
-	// 	quality: '100'
-	// };	 
-	// pdf.create(html, options).toFile(output+'/'+outputPDFFile, function(err, res) {
-	//   if (err) return cb(err);
-	// });
 
 	// output pdf with wkhtmltopdf
 	html_full_path_imgs = html.replace(/img src="/g,function (match) {
