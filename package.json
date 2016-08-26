@@ -2,11 +2,11 @@
   "name": "guide-automator",
   "version": "1.0.7",
   "description": "User guide automator",
-  "preferGlobal": true,
+  "preferGlobal": false,
   "bin": {
     "guide-automator": "server.js"
   },
-  "main":"server.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -25,7 +25,8 @@
     "gm": "^1.22.0",
     "html-pdf": "2.0.1",
     "selenium-webdriver": "2.53.3",
-    "showdown": "1.4.0"
+    "showdown": "1.4.0",
+    "wkhtmltopdf": "^0.3.3"
   },
   "engines": {
     "node": "0.10.x",

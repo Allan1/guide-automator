@@ -5,6 +5,7 @@ var path = require("path");
 var showdown = require('showdown');
 var pdf = require('html-pdf');
 var gm = require('gm').subClass({imageMagick: true});
+var wkhtmltopdf = require('wkhtmltopdf');
 var input, output, imgOutDir;
 var outputHTMLFile = 'manual.html';
 var outputPDFFile = 'manual.pdf';
@@ -15,6 +16,7 @@ var markdownText = '';
 var converter = new showdown.Converter({parseImgDimensions:true});
 var html_start = '<!DOCTYPE html><html lang="en"><head><title></title><meta charset="UTF-8"></head><body>';
 var html_end = '</body></html>';
+var html_pagebreak = '<div style="page-break-after: always;"></div>';
 var outline_style = 'solid red 3px';
 // var outline_style = 'solid rgba(0,0,0,0.8) 2000px';
 
@@ -245,22 +247,36 @@ function clearAndExportFiles(cb) {
 	   	fs.unlinkSync(output+'/'+outputPDFFile);
 	  }
 	});
-	return exportFiles(markdownText.replace(/<replaceSelenium>/g,""),cb);
+	return exportFiles(markdownText.replace(/<replaceSelenium>/g,"").replace(/\\pagebreak/g,html_pagebreak),cb);
 }
 
 function exportFiles(text,cb) {
 	
 	var html = html_start+converter.makeHtml(text)+html_end;
 	
-	var options = { 
-		base: 'file:///'+path.resolve(output).replace(/\\/g,'/')+'/', 
-		format: 'A4',
-		quality: '100'
-	};	 
-	pdf.create(html, options).toFile(output+'/'+outputPDFFile, function(err, res) {
+	var basePath = 'file:///'+path.resolve(output).replace(/\\/g,'/')+'/';
+	// output pdf
+	// var options = { 
+	// 	base: basePath, 
+	// 	format: 'A4',
+	// 	quality: '100'
+	// };	 
+	// pdf.create(html, options).toFile(output+'/'+outputPDFFile, function(err, res) {
+	//   if (err) return cb(err);
+	// });
+
+	// output pdf with wkhtmltopdf
+	html_full_path_imgs = html.replace(/img src="/g,function (match) {
+		return match+basePath;
+	});
+
+	wkhtmltopdf(html_full_path_imgs, { pageSize: 'letter', output: output+'/'+'out.pdf', toc: true }, function (err, stream) {
 	  if (err) return cb(err);
 	});
-		
+	
+	// output html
 	fs.writeFileSync(output+'/'+outputHTMLFile,html);
+
+
 	return cb(null);
 }
