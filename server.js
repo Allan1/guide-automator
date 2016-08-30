@@ -8,6 +8,7 @@ var wkhtmltopdf = require('wkhtmltopdf');
 var input, output, imgOutDir;
 var outputHTMLFile = 'manual.html';
 var outputPDFFile = 'manual.pdf';
+var DEFAULT_IMG_WIDTH = '60%';
 var cmdsDictionary = ['get','click','takeScreenshot','scrollTo','takeScreenshotOf','fillIn','submit','wait','sleep']
 var imgCount = imgCountSel = 0;
 var seleniumBlocks= new Array();
@@ -18,6 +19,12 @@ var html_end = '</body></html>';
 var html_pagebreak = '<div style="page-break-after: always;"></div>';
 var outline_style = 'solid red 3px';
 // var outline_style = 'solid rgba(0,0,0,0.8) 2000px';
+var wkhtmltopdf_options = { 
+	pageSize: 'letter', 
+	output: null, 
+	toc: true,
+	tocHeaderText: 'Índice'
+};
 
 var webdriver = require('selenium-webdriver'),
     By = require('selenium-webdriver').By,
@@ -42,6 +49,8 @@ if (!process.argv[3]) {
 	process.exit();
 }
 output = process.argv[3];
+wkhtmltopdf_options.output = process.argv[3]+'/'+outputPDFFile;
+
 imgOutDir = path.join(process.argv[3],'/img/');
 console.log(imgOutDir)
 
@@ -99,78 +108,10 @@ function execSelenium(seleniumBlocks,cb) {
 						driver.get(cmds[i].params[0]);
 						break;
 					case 'takeScreenshot':
-						var cmd = cmds[i];
- 						imgCount++;
- 						var index = 0;
- 						var width = '60%';
- 						if (cmd.params.length > 1) {
- 							width = cmd.params[1];
- 						}
- 						markdownText = markdownText.replace(/<replaceSelenium>/g,function (match) {
- 							index++;
-		    			if( (index-1) === cmd.blockIndex ) {
-	    					return '<replaceSelenium>![]('+imgCount+'.png ='+width+'x*)';
-		    			}
-							return match;
-		    		});
- 						driver.takeScreenshot().then(
-					    function(image, err) {
-					    	imgCountSel++;
-					    	if (err) { return cb(err);}
-					    	else{
-					    		fs.stat(output+'/'+imgCountSel+'.png', function (err, stats) {
-									  if (stats) {
-									   	fs.unlinkSync(output+'/'+imgCountSel+'.png');
-									  }
-									  fs.writeFileSync(output+'/'+imgCountSel+'.png', image, 'base64');
-									});
-				        }
-					    }
-						);
+						takeScreenshot(cmds[i],cb);
 						break;
 					case 'takeScreenshotOf':
-						var cmd = cmds[i];
- 						imgCount++;
- 						var index = 0;
- 						var width = '60%';
- 						if (!cmd.params.length) {
- 							console.log("Missing param for takeScreenshotOf")
- 							return cb(null);
- 						}
- 						if (cmd.params.length > 1) {
- 							width = cmd.params[1];
- 						}
-
- 						markdownText = markdownText.replace(/<replaceSelenium>/g,function (match) {
- 							index++;
-		    			if( (index-1) === cmd.blockIndex ) {
-	    					return '<replaceSelenium>![]('+imgCount+'.png ='+width+'x*)';
-		    			}
-							return match;
-		    		});
-						driver.findElement(By.css(cmds[i].params[0])).then(function(el) {
-							driver.executeScript("arguments[0].style.outline = '"+outline_style+"'",el);
-							driver.executeScript("return arguments[0].getBoundingClientRect()",el).then(function (rect) {
-								driver.takeScreenshot().then(
-							    function(image, err) {
-							    	driver.executeScript("arguments[0].style.outline = ''",el);
-							    	imgCountSel++;
-							    	fs.stat(output+'/'+imgCountSel+'.png', function (err, stats) {
-										  if (stats) {
-										   	fs.unlinkSync(output+'/'+imgCountSel+'.png');
-										  }
-										});
-										var img = new Buffer(image, 'base64');
-							    	gm(img)
-							    		.crop(rect.width,rect.height,rect.left, rect.top)
-							    		.write(output+'/'+imgCountSel+'.png',function (err) {
-							    			if (err)
-							    				return cb(err);
-							    		});
-							    }
-								);
-							})
-					 	});
+						takeScreenshotOf(cmds[i],cb);
 						break;
 					case 'scrollTo':
 						// driver.findElement(By.css(cmds[i].params[0])).then(function(el) {
@@ -205,8 +146,9 @@ function execSelenium(seleniumBlocks,cb) {
 						if (cmd.params.length > 1) {
  							timeout = cmd.params[1];
  						}
- 						else
+ 						else{
  							timeout = 10000;
+ 						}
 						driver.wait(until.elementLocated(By.id(cmds[i].params[0])), timeout);
 						break;
 					default:
@@ -215,6 +157,99 @@ function execSelenium(seleniumBlocks,cb) {
 			}
 		}
 		return cb(null);
+	});
+}
+
+function replaceBlockWithImage(blockIndex, filename, width) {
+	var index = 0;
+	markdownText = markdownText.replace(/<replaceSelenium>/g,function (match) {
+		index++;
+		if( (index-1) === blockIndex ) {
+			return '<replaceSelenium>![]('+filename+' ='+width+'x*)';
+		}
+		return match;
+	});
+}
+
+function takeScreenshot(cmd,cb) {
+	imgCount++;
+	var width = DEFAULT_IMG_WIDTH;
+	if (cmd.params.length > 1) {
+		width = cmd.params[1];
+	}
+	
+	replaceBlockWithImage(cmd.blockIndex,imgCount+'.png',width);
+
+	driver.takeScreenshot().then(
+	  function(image, err) {
+	  	imgCountSel++;
+	  	if (err) { return cb(err);}
+	  	else{
+	  		fs.stat(output+'/'+imgCountSel+'.png', function (err, stats) {
+				  if (stats) {
+				   	fs.unlinkSync(output+'/'+imgCountSel+'.png');
+				  }
+				  fs.writeFileSync(output+'/'+imgCountSel+'.png', image, 'base64');
+				});
+	    }
+	  }
+	);
+}
+
+function takeScreenshotOf(cmd,cb) {
+	imgCount++;
+	var width = DEFAULT_IMG_WIDTH;
+	var crop = outline = false;
+	var cssSelector = null;
+	if (!cmd.params.length) {
+		console.log("Missing param for takeScreenshotOf")
+		return cb(null);
+	}
+	else{
+		cssSelector = cmd.params[0];
+	}
+
+	if (cmd.params.length > 1) {
+		crop = parseInt(cmd.params[1])
+	}
+	if (cmd.params.length > 2) {
+		outline = parseInt(cmd.params[2])
+	}
+	if (cmd.params.length > 3) {
+		width = cmd.params[3];
+	}
+
+	replaceBlockWithImage(cmd.blockIndex,imgCount+'.png',width);
+
+	driver.findElement(By.css(cssSelector)).then(function(el) {
+		if (outline) {
+			driver.executeScript("arguments[0].style.outline = '"+outline_style+"'",el);
+  	}
+		driver.executeScript("return arguments[0].getBoundingClientRect()",el).then(function (rect) {
+			driver.takeScreenshot().then(
+		    function(image, err) {		    	
+		    	driver.executeScript("arguments[0].style.outline = ''",el);
+		    	imgCountSel++;
+		    	fs.stat(output+'/'+imgCountSel+'.png', function (err, stats) {
+					  if (stats) {
+					   	fs.unlinkSync(output+'/'+imgCountSel+'.png');
+					  }
+					});
+					if (crop) {
+						var img = new Buffer(image, 'base64');
+			    	gm(img)
+			    		.crop(rect.width,rect.height,rect.left, rect.top)
+			    		.write(output+'/'+imgCountSel+'.png',function (err) {
+			    			if (err)
+			    				return cb(err);
+			    		});											
+					}
+					else{
+						fs.writeFileSync(output+'/'+imgCountSel+'.png', image, 'base64');
+					}
+		    }
+			);
+		})
 	});
 }
 
@@ -242,33 +277,40 @@ function compile(seleniumBlocks, cb) {
 	return cb(null,cmds);
 }
 
+function replaceRemainingBlocks(cb) {
+	markdownText = markdownText.replace(/<replaceSelenium>/g,"").replace(/\\pagebreak/g,html_pagebreak);
+	return cb(null,markdownText);
+}
+
 function clearAndExportFiles(cb) {
 	fs.stat(output+'/'+outputPDFFile, function (err, stats) {
 	  if (stats) {
 	   	fs.unlinkSync(output+'/'+outputPDFFile);
 	  }
 	});
-	return exportFiles(markdownText.replace(/<replaceSelenium>/g,"").replace(/\\pagebreak/g,html_pagebreak),cb);
+	replaceRemainingBlocks(function (err,outputMarkdown) {
+		if (err) {return cb(err);}
+		else {
+			return exportFiles(outputMarkdown,cb);			
+		}
+	})
 }
 
 function exportFiles(text,cb) {
-	
 	var html = html_start+converter.makeHtml(text)+html_end;
-	
-	var basePath = 'file:///'+path.resolve(output).replace(/\\/g,'/')+'/';
+	fs.writeFileSync(output+'/'+outputHTMLFile,html);
 
-	// output pdf with wkhtmltopdf
+	return exportPDF(html,cb);
+}
+
+function exportPDF(html,cb) {
+	var basePath = 'file:///'+path.resolve(output).replace(/\\/g,'/')+'/';
 	html_full_path_imgs = html.replace(/img src="/g,function (match) {
 		return match+basePath;
 	});
 
-	wkhtmltopdf(html_full_path_imgs, { pageSize: 'letter', output: output+'/'+'out.pdf', toc: true }, function (err, stream) {
+	wkhtmltopdf(html_full_path_imgs, wkhtmltopdf_options, function (err, stream) {
 	  if (err) return cb(err);
-	});
-	
-	// output html
-	fs.writeFileSync(output+'/'+outputHTMLFile,html);
-
-
-	return cb(null);
+	  else { return cb(null);}
+	});	
 }
