@@ -9,7 +9,7 @@ var input, output, imgOutDir;
 var outputHTMLFile = 'manual.html';
 var outputPDFFile = 'manual.pdf';
 var DEFAULT_IMG_WIDTH = '60%';
-var cmdsDictionary = ['get','click','takeScreenshot','scrollTo','takeScreenshotOf','fillIn','submit','wait','sleep']
+var cmdsDictionary = ['get','click','takeScreenshot','scrollTo','takeScreenshotOf','fillIn','submit','wait','sleep','clickByLinkText']
 var imgCount = imgCountSel = 0;
 var seleniumBlocks= new Array();
 var markdownText = '';
@@ -133,6 +133,9 @@ function execSelenium(seleniumBlocks,cb) {
 					case 'click':
 						driver.findElement(By.css(cmds[i].params[0])).click();
 						break;
+					case 'clickByLinkText':
+						driver.findElement(By.linkText(cmds[i].params[0])).click();
+						break;
 					case 'hover':
 						// driver.findElement(By.css(cmds[i].params[0])).then(function(elem){
 						// 	driver.actions().mouseMove(elem).perform();
@@ -185,12 +188,9 @@ function takeScreenshot(cmd,cb) {
 	  	imgCountSel++;
 	  	if (err) { return cb(err);}
 	  	else{
-	  		fs.stat(output+'/'+imgCountSel+'.png', function (err, stats) {
-				  if (stats) {
-				   	fs.unlinkSync(output+'/'+imgCountSel+'.png');
-				  }
-				  fs.writeFileSync(output+'/'+imgCountSel+'.png', image, 'base64');
-				});
+				fs.writeFile(output+'/'+imgCountSel+'.png', image, 'base64',function (err) {
+					if (err) { return cb(err);}
+				});	  		
 	    }
 	  }
 	);
@@ -230,22 +230,18 @@ function takeScreenshotOf(cmd,cb) {
 		    function(image, err) {		    	
 		    	driver.executeScript("arguments[0].style.outline = ''",el);
 		    	imgCountSel++;
-		    	fs.stat(output+'/'+imgCountSel+'.png', function (err, stats) {
-					  if (stats) {
-					   	fs.unlinkSync(output+'/'+imgCountSel+'.png');
-					  }
-					});
 					if (crop) {
 						var img = new Buffer(image, 'base64');
 			    	gm(img)
 			    		.crop(rect.width,rect.height,rect.left, rect.top)
 			    		.write(output+'/'+imgCountSel+'.png',function (err) {
-			    			if (err)
-			    				return cb(err);
+			    			if (err) {return cb(err);}
 			    		});											
 					}
 					else{
-						fs.writeFileSync(output+'/'+imgCountSel+'.png', image, 'base64');
+						fs.writeFile(output+'/'+imgCountSel+'.png', image, 'base64',function (err) {
+							if (err) { return cb(err);}
+						});
 					}
 		    }
 			);
@@ -283,11 +279,6 @@ function replaceRemainingBlocks(cb) {
 }
 
 function clearAndExportFiles(cb) {
-	fs.stat(output+'/'+outputPDFFile, function (err, stats) {
-	  if (stats) {
-	   	fs.unlinkSync(output+'/'+outputPDFFile);
-	  }
-	});
 	replaceRemainingBlocks(function (err,outputMarkdown) {
 		if (err) {return cb(err);}
 		else {
