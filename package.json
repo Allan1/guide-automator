@@ -2,7 +2,7 @@
   "name": "guide-automator",
   "version": "1.0.8",
   "description": "User guide automator",
-  "preferGlobal": false,
+  "preferGlobal": true,
   "bin": {
     "guide-automator": "server.js"
   },
