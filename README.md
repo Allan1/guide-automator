@@ -40,7 +40,7 @@
 - Params: `cssSelector`
 
 ## sleep
-- Params: `mileseconds`
+- Params: `milleseconds`
 
 
 
