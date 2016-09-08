@@ -1,6 +1,6 @@
 {
   "name": "guide-automator",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "User guide automator",
   "preferGlobal": true,
   "bin": {
