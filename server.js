@@ -22,7 +22,8 @@ var wkhtmltopdf_options = {
 	pageSize: 'letter', 
 	output: null, 
 	toc: true,
-	tocHeaderText: 'Índice'
+	tocHeaderText: 'Índice',
+	footerRight: "[page]"
 };
 
 var webdriver = require('selenium-webdriver'),
@@ -51,7 +52,7 @@ output = process.argv[3];
 wkhtmltopdf_options.output = process.argv[3]+'/'+outputPDFFile;
 
 imgOutDir = path.join(process.argv[3],'/img/');
-console.log(imgOutDir)
+// console.log(imgOutDir)
 
 fs.stat(input,function(err,stats){
 	if (err) {
@@ -198,7 +199,8 @@ function takeScreenshot(cmd,cb) {
 function takeScreenshotOf(cmd,cb) {
 	imgCount++;
 	var width = DEFAULT_IMG_WIDTH;
-	var crop = outline = false;
+	var crop = false;
+	var outline = false;
 	var cssSelector = null;
 	if (!cmd.params.length) {
 		console.log("Missing param for takeScreenshotOf")
@@ -219,7 +221,6 @@ function takeScreenshotOf(cmd,cb) {
 	}
 
 	replaceBlockWithImage(cmd.blockIndex,imgCount+'.png',width);
-
 	driver.findElement(By.css(cssSelector)).then(function(el) {
 		if (outline) {
 			driver.executeScript("arguments[0].style.outline = '"+outline_style+"'",el);
