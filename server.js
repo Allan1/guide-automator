@@ -146,13 +146,14 @@ function execSelenium(seleniumBlocks,cb) {
 						driver.sleep(parseInt(cmds[i].params[0]));
 						break;
 					case 'wait':
+						var cmd = cmds[i];
 						if (cmd.params.length > 1) {
  							timeout = cmd.params[1];
  						}
  						else{
- 							timeout = 10000;
+ 							timeout = 5000;
  						}
-						driver.wait(until.elementLocated(By.id(cmds[i].params[0])), timeout);
+						driver.wait(until.elementLocated(By.css(cmd.params[0])), timeout);
 						break;
 					default:
 						break;
