@@ -1,6 +1,6 @@
 {
   "name": "guide-automator",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "User guide automator",
   "preferGlobal": true,
   "bin": {
@@ -14,12 +14,12 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Allan1/projetofinal.git"
+    "url": "https://github.com/Allan1/guide-automator.git"
   },
   "bugs": {
-    "url": "https://github.com/Allan1/projetofinal/issues"
+    "url": "https://github.com/Allan1/guide-automator/issues"
   },
-  "homepage": "https://github.com/Allan1/projetofinal",
+  "homepage": "https://github.com/Allan1/guide-automator",
   "dependencies": {
     "express": "^4.12.4",
     "gm": "^1.22.0",
