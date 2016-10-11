@@ -2,6 +2,8 @@
 
 > Automated User Guide Generation with Markdown
 
+>> Video Tutorial in Portuguese on [YouTube](https://www.youtube.com/watch?v=zXZyNgJOgdY)
+
 ## API commands
 
 - [get](#get)
