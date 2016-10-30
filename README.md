@@ -1,8 +1,18 @@
 # GuideAutomator
 
+[![npm version](https://badge.fury.io/js/guide-automator.svg)](https://badge.fury.io/js/guide-automator)
+
 > Automated User Guide Generation with Markdown
 
 >> Video Tutorial in Portuguese on [YouTube](https://www.youtube.com/watch?v=zXZyNgJOgdY)
+
+## Install
+
+```
+$ npm install guide-automator
+```
+
+[![NPM](https://nodei.co/npm/guide-automator.png)](https://nodei.co/npm/guide-automator/)
 
 ## API commands
 
