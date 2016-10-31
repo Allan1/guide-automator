@@ -1,4 +1,9 @@
 #! /usr/bin/env node
+
+//TODO Pensar em uma forma de tratar com ```javascript ao invés de <automator>
+//TODO olhar os outros TO DO
+
+//--Variaveis ------------------
 var fs = require("fs");
 var path = require("path");
 var showdown = require('showdown');
@@ -34,10 +39,19 @@ var driver = new webdriver.Builder()
     .forBrowser('chrome')
     .build();
 
+//-- Fim Variaveis ------------------
+
+//-- EXPORTS -------------
+//TODO Criar um export que preste, caso dê suporte a export
 exports.printMsg = function() {
   console.log("This is a message from the demo package");
 }
 
+//-- Fim EXPORTS -------------
+
+
+//-- Tratamento de Argumentos --------
+//TODO Pensar em usar o commander
 if (!process.argv[2]) {
 	console.log('Input file missing')
 	process.exit();
@@ -68,19 +82,23 @@ fs.stat(output,function(err,stats){
 	}
 });
 
+//-- Fim Tratamento de Argumentos --------
+
+//-- Tratamento dos blocos 'automator'-----
 processInput(input,function (err) {
 	if (err) { throw err;}
 });
 
 function processInput(input, cb) {
-	fs.readFile(input, 'utf8', (err, data) => {
+	fs.readFile(input, 'utf8', (err, data) => { //Leitura do arquivo
 	  if (err) { return cb(err);}
-	  return extractMarkdownAndSelenium(data,function (seleniumBlocks) {
-	  	return execSelenium(seleniumBlocks,function (err) {
+	  return extractMarkdownAndSelenium(data,function (seleniumBlocks) { //Extração dos blocos 'automator'
+	  	return execSelenium(seleniumBlocks,function (err) { //Execução e tratamento dos tokens dos blocos 'automator'
 	  		if (err) { return cb(err);}
 	  		else{
-	  			driver.quit().then(function () {
-	  				clearAndExportFiles(cb)
+	  			driver.quit().then(function () { 
+	  				clearAndExportFiles(cb) //Limpa os '<replaceSelenium>' e exporta para pdf e html. 
+	  				//TODO Permitir escolher o que exportar, mas por default (pdf e html)
 	  			});
 	  		}
 	  	});
@@ -91,13 +109,41 @@ function processInput(input, cb) {
 function extractMarkdownAndSelenium(markdownAndCode, cb){    
     var rePattern = /<automator>([\s\S]+?)<\/automator>/g;
     markdownText = markdownAndCode.replace(rePattern, function(match, p1, offset, string) {
-  	  p1 = p1.replace(/\r?\n|\r/g,'');
+  	  p1 = p1.replace(/\r?\n|\r/g,''); //TODO Verificar se isso que deu erro ao dar espaço/tab antes de chamar a função
       seleniumBlocks.push(p1);
     	return '<replaceSelenium>';
     });
     return cb(seleniumBlocks);
 }
 
+function compile(seleniumBlocks, cb) {
+	var cmds = [];
+	var j = 0;
+	for (var i = 0; i < seleniumBlocks.length; i++) {
+		var tokens = seleniumBlocks[i].split(';');
+		for (var o = 0; o < tokens.length; o++) {
+			if (tokens[o]!=null && tokens[o]!='') {
+				var matches = tokens[o].match(/^(\w+)(?:\(((?:\'.+\'|\d+)(?:,(?:\'.+\'|\d+))*)\))?$/)
+				if (matches && (cmdsDictionary.indexOf(matches[1]) > -1)) { // IE9
+					cmds[j] = {};
+					cmds[j].cmd = matches[1];
+					cmds[j].params = matches[2]? matches[2].replace(/["']/g, "").split(',') : [];
+					cmds[j].blockIndex = i;
+					j++;
+				}
+				else {
+					return cb("Invalid token: "+tokens[o])
+				}
+			}
+		}
+	}
+	return cb(null,cmds);
+}
+
+//-- Fim Tratamento dos blocos 'automator'-----
+
+//-- Tratamento dos tokens ou execução de funcionalidades 'automator'  ------
+//TODO Isolar a lógica de cada funcionalidade e chamar pelo require
 function execSelenium(seleniumBlocks,cb) {	
 	return compile(seleniumBlocks,function (err,cmds) {
 		if (err) { return cb(err);}
@@ -163,6 +209,7 @@ function execSelenium(seleniumBlocks,cb) {
 		return cb(null);
 	});
 }
+
 
 function replaceBlockWithImage(blockIndex, filename, width) {
 	var index = 0;
@@ -250,35 +297,15 @@ function takeScreenshotOf(cmd,cb) {
 	});
 }
 
-function compile(seleniumBlocks, cb) {
-	var cmds = [];
-	var j = 0;
-	for (var i = 0; i < seleniumBlocks.length; i++) {
-		var tokens = seleniumBlocks[i].split(';');
-		for (var o = 0; o < tokens.length; o++) {
-			if (tokens[o]!=null && tokens[o]!='') {
-				var matches = tokens[o].match(/^(\w+)(?:\(((?:\'.+\'|\d+)(?:,(?:\'.+\'|\d+))*)\))?$/)
-				if (matches && (cmdsDictionary.indexOf(matches[1]) > -1)) { // IE9
-					cmds[j] = {};
-					cmds[j].cmd = matches[1];
-					cmds[j].params = matches[2]? matches[2].replace(/["']/g, "").split(',') : [];
-					cmds[j].blockIndex = i;
-					j++;
-				}
-				else {
-					return cb("Invalid token: "+tokens[o])
-				}
-			}
-		}
-	}
-	return cb(null,cmds);
-}
-
 function replaceRemainingBlocks(cb) {
 	markdownText = markdownText.replace(/<replaceSelenium>/g,"").replace(/\\pagebreak/g,html_pagebreak);
 	return cb(null,markdownText);
 }
 
+//-- Fim Tratamento dos tokens ou execução de funcionalidades 'automator' ------
+
+//-- Tratamento para exportar o produto final ----------
+//TODO Isolar a lógica de cada funcionalidade e chamar pelo require
 function clearAndExportFiles(cb) {
 	replaceRemainingBlocks(function (err,outputMarkdown) {
 		if (err) {return cb(err);}
@@ -306,3 +333,5 @@ function exportPDF(html,cb) {
 	  else { return cb(null);}
 	});	
 }
+
+//-- Fim Tratamento para exportar o produto final ----------
