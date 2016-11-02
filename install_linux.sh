@@ -15,7 +15,7 @@ echo "# Installing Guide-Automator..."
 if ! (is_executable npm && is_executable node); then
   echo " # Installing Nodejs"
   if is_executable wget; then
-    wget -L https://deb.nodesource.com/setup_6.x | sudo -E bash -
+    wget -qO- https://deb.nodesource.com/setup_6.x | sudo -E bash -
     sudo apt-get install -y nodejs
   elif is_executable curl; then
     curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
