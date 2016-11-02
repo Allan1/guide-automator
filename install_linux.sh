@@ -64,4 +64,4 @@ if ! (is_executable chromedriver) ; then
   rm chromedriver.zip  
 fi
 
-npm install -g guide-automator
+sudo npm install -g guide-automator
