@@ -30,7 +30,18 @@ fi
 
 if ! (is_executable wkhtmltopdf); then
   echo " # Installing Dependencie WKHTMLTOPDF"
-  sudo apt-get install wkhtmltopdf -y
+  case $( uname -m ) in
+  x86_64) 
+    wget http://download.gna.org/wkhtmltopdf/0.12/0.12.3/wkhtmltox-0.12.3_linux-generic-amd64.tar.xz -O wkhtmltox.tar.xz;;
+  *)
+    wget http://download.gna.org/wkhtmltopdf/0.12/0.12.3/wkhtmltox-0.12.3_linux-generic-i386.tar.xz -O wkhtmltox.tar.xz;;
+  esac
+  tar -xf wkhtmltox.tar.xz
+  rm wkhtmltox.tar.xz
+  sudo mv wkhtmltox/ /usr/lib/
+  cd /usr/bin/
+  sudo ln -s ../lib/wkhtmltox/bin/wkhtmltopdf wkhtmltopdf
+  cd ~
 fi
   
 if ! (is_executable imagemagick); then
@@ -49,7 +60,7 @@ if ! (is_executable chromedriver) ; then
   
 
   unzip chromedriver.zip
-  sudo mv chromedriver /bin/
+  sudo mv chromedriver /usr/bin/
   rm chromedriver.zip  
 fi
 
