@@ -4,15 +4,10 @@
 //TODO olhar os outros TO DO
 
 //--Variaveis ------------------
+var DEFAULT_IMG_WIDTH = '60%';
 var fs = require("fs");
-var options = {
-	output: ""
-};
 var path = require("path");
 var showdown = require('showdown');
-var gm = require('gm').subClass({
-	imageMagick: true
-});
 var wkhtmltopdf = require('wkhtmltopdf');
 var input, output;
 var outputHTMLFile = 'manual.html';
@@ -29,18 +24,14 @@ var cmdsDictionary = [
 	'sleep',
 	'clickByLinkText'
 ];
-var imgCount = 0;
-var imgCountSel = 0;
 var seleniumBlocks = [];
 var markdownText = '';
-var DEFAULT_IMG_WIDTH = '60%';
 var converter = new showdown.Converter({
 	parseImgDimensions: true
 });
 var html_start = '<!DOCTYPE html><html lang="en"><head><title></title><meta charset="UTF-8"></head><body>';
 var html_end = '</body></html>';
 var html_pagebreak = '<div style="page-break-after: always;"></div>';
-var outline_style = 'solid red 3px';
 var wkhtmltopdf_options = {
 	pageSize: 'letter',
 	output: null,
@@ -83,7 +74,7 @@ if (!process.argv[3]) {
 	process.exit();
 }
 output = process.argv[3];
-wkhtmltopdf_options.output = process.argv[3] + '/' + outputPDFFile;
+wkhtmltopdf_options.output = output + '/' + outputPDFFile;
 
 guideAutomator.defineOptions({
 	output: output
@@ -182,13 +173,21 @@ function execSelenium(seleniumBlocks, cb) {
 						break;
 					case 'takeScreenshot':
 						width = cmds[i].params[0] || DEFAULT_IMG_WIDTH;
-						screenShotName = guideAutomator.takeScreenshot(cmds[i]);
+						screenShotName = guideAutomator.takeScreenshot();
 						replaceBlockWithImage(cmds[i].blockIndex,
 							screenShotName,
 							width);
 						break;
 					case 'takeScreenshotOf':
-						takeScreenshotOf(cmds[i], cb);
+						width = cmds[i].params[3] || DEFAULT_IMG_WIDTH;
+						screenShotName = guideAutomator.takeScreenshotOf(
+							cmds[i].params[0],
+							cmds[i].params[1],
+							cmds[i].params[2]
+						);
+						replaceBlockWithImage(cmds[i].blockIndex,
+							screenShotName,
+							width);
 						break;
 					case 'scrollTo':
 						// driver.findElement(By.css(cmds[i].params[0])).then(function(el) {
@@ -201,17 +200,16 @@ function execSelenium(seleniumBlocks, cb) {
 						// var text = driver.findElement(By.css(cmds[i].params[0])).getText();
 						break;
 					case 'fillIn':
-						driver.findElement(By.css(cmds[i].params[0])).clear();
-						driver.findElement(By.css(cmds[i].params[0])).sendKeys(cmds[i].params[1]);
+						guideAutomator.fillIn(cmds[i].params[0], cmds[i].params[1]);
 						break;
 					case 'submit':
-						driver.findElement(By.css(cmds[i].params[0])).submit();
+						guideAutomator.submit(cmds[i].params[0]);
 						break;
 					case 'click':
-						driver.findElement(By.css(cmds[i].params[0])).click();
+						guideAutomator.click(cmds[i].params[0]);
 						break;
 					case 'clickByLinkText':
-						driver.findElement(By.linkText(cmds[i].params[0])).click();
+						guideAutomator.clickByLinkText(cmds[i].params[0]);
 						break;
 					case 'hover':
 						// driver.findElement(By.css(cmds[i].params[0])).then(function(elem){
@@ -220,16 +218,10 @@ function execSelenium(seleniumBlocks, cb) {
 						// });
 						break;
 					case 'sleep':
-						driver.sleep(parseInt(cmds[i].params[0]));
+						guideAutomator.sleep(cmds[i].params[0]);
 						break;
 					case 'wait':
-						var cmd = cmds[i];
-						if (cmd.params.length > 1) {
-							timeout = cmd.params[1];
-						} else {
-							timeout = 5000;
-						}
-						driver.wait(until.elementLocated(By.css(cmd.params[0])), timeout);
+						guideAutomator.wait(cmds[i].params[0], cmds[i].params[1]);
 						break;
 					default:
 						break;
@@ -249,86 +241,6 @@ function replaceBlockWithImage(blockIndex, filename, width) {
 			return '<replaceSelenium>![](' + filename + ' =' + width + 'x*)';
 		}
 		return match;
-	});
-}
-
-function takeScreenshot(cmd, cb) {
-	//imgCount++;
-	var width = DEFAULT_IMG_WIDTH;
-	if (cmd.params.length > 1) {
-		width = cmd.params[1];
-	}
-
-	replaceBlockWithImage(cmd.blockIndex, imgCount + '.png', width);
-
-	driver.takeScreenshot().then(
-		function(image, err) {
-			imgCountSel++;
-			if (err) {
-				return cb(err);
-			} else {
-				fs.writeFile(output + '/' + imgCountSel + '.png', image, 'base64', function(err) {
-					if (err) {
-						return cb(err);
-					}
-				});
-			}
-		}
-	);
-}
-
-function takeScreenshotOf(cmd, cb) {
-	imgCount++;
-	var width = DEFAULT_IMG_WIDTH;
-	var crop = false;
-	var outline = false;
-	var cssSelector = null;
-	if (!cmd.params.length) {
-		console.log("Missing param for takeScreenshotOf");
-		return cb(null);
-	} else {
-		cssSelector = cmd.params[0];
-	}
-
-	if (cmd.params.length > 1) {
-		crop = parseInt(cmd.params[1]);
-	}
-	if (cmd.params.length > 2) {
-		outline = parseInt(cmd.params[2]);
-	}
-	if (cmd.params.length > 3) {
-		width = cmd.params[3];
-	}
-
-	replaceBlockWithImage(cmd.blockIndex, imgCount + '.png', width);
-	driver.findElement(By.css(cssSelector)).then(function(el) {
-		if (outline) {
-			driver.executeScript("arguments[0].style.outline = '" + outline_style + "'", el);
-		}
-		driver.executeScript("return arguments[0].getBoundingClientRect()", el).then(function(rect) {
-			driver.takeScreenshot().then(
-				function(image, err) {
-					driver.executeScript("arguments[0].style.outline = ''", el);
-					imgCountSel++;
-					if (crop) {
-						var img = new Buffer(image, 'base64');
-						gm(img)
-							.crop(rect.width, rect.height, rect.left, rect.top)
-							.write(output + '/' + imgCountSel + '.png', function(err) {
-								if (err) {
-									return cb(err);
-								}
-							});
-					} else {
-						fs.writeFile(output + '/' + imgCountSel + '.png', image, 'base64', function(err) {
-							if (err) {
-								return cb(err);
-							}
-						});
-					}
-				}
-			);
-		});
 	});
 }
 
