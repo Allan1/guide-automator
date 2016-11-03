@@ -4,7 +4,6 @@
 //TODO olhar os outros TO DO
 
 //--Variaveis ------------------
-var DEFAULT_IMG_WIDTH = '60%';
 var fs = require("fs");
 var path = require("path");
 var showdown = require('showdown');
@@ -12,20 +11,6 @@ var wkhtmltopdf = require('wkhtmltopdf');
 var input, output;
 var outputHTMLFile = 'manual.html';
 var outputPDFFile = 'manual.pdf';
-var cmdsDictionary = [
-	'get',
-	'click',
-	'takeScreenshot',
-	'scrollTo',
-	'takeScreenshotOf',
-	'fillIn',
-	'submit',
-	'wait',
-	'sleep',
-	'clickByLinkText'
-];
-var seleniumBlocks = [];
-var markdownText = '';
 var converter = new showdown.Converter({
 	parseImgDimensions: true
 });
@@ -38,14 +23,6 @@ var wkhtmltopdf_options = {
 	tocHeaderText: 'Índice',
 	footerRight: "[page]"
 };
-
-var webdriver = require('selenium-webdriver'),
-	By = require('selenium-webdriver').By,
-	until = require('selenium-webdriver').until;
-
-var driver = new webdriver.Builder()
-	.forBrowser('chrome')
-	.build();
 
 guideAutomator = require('./bin/guide-automator');
 
@@ -113,12 +90,6 @@ function processInput(input, cb) {
 		});
 	});
 }
-/*
-function replaceRemainingBlocks(cb) {
-	markdownText = markdownText.replace(/<replaceSelenium>/g, "").replace(/\\pagebreak/g, html_pagebreak);
-	return cb(null, markdownText);
-}
-*/
 //-- Fim Tratamento dos tokens ou execução de funcionalidades 'automator' ------
 
 //-- Tratamento para exportar o produto final ----------

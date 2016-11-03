@@ -48,8 +48,9 @@ module.exports = {
 
 
 function defineOptions(arg) {
-	options.output = arg.output;
-	options.outlineStyle = arg.outlineStyle;
+	Object.keys(options).forEach(function(key) {
+		options[key] = arg[key] || options[key];
+	});
 }
 
 /**
@@ -101,7 +102,7 @@ function takeScreenshotOf(cssSelector, crop, outline) {
 		driver.executeScript("return arguments[0].getBoundingClientRect()", el).then(function(rect) {
 			driver.takeScreenshot().then(
 				function(image, err) {
-					//driver.executeScript("arguments[0].style.outline = ''", el);
+					driver.executeScript("arguments[0].style.outline = ''", el);
 					if (parseInt(crop)) {
 						var img = new Buffer(image, 'base64');
 						gm(img)
@@ -230,7 +231,6 @@ function compile(seleniumBlocks, cb) {
 //-- Fim Tratamento dos blocos 'automator'-----
 
 //-- Tratamento dos tokens ou execução de funcionalidades 'automator'  ------
-//TODO Isolar a lógica de cada funcionalidade e chamar pelo require
 function execSelenium(seleniumBlocks, cb) {
 	var result;
 	return compile(seleniumBlocks, function(err, cmds) {
@@ -316,10 +316,9 @@ function guideAutomatorParse(data, cb) {
 			} else {
 				driver.quit().then(function() {
 					return replaceRemainingBlocks(cb);
-					//clearAndExportFiles(cb); //Limpa os '<replaceSelenium>' e exporta para pdf e html.
-					//TODO Permitir escolher o que exportar, mas por default (pdf e html)
 				});
 			}
 		});
 	});
 }
+//-- Fim Tratamento dos tokens ou execução de funcionalidades 'automator' ------
