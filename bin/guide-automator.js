@@ -68,13 +68,14 @@ function get(url) {
  */
 function takeScreenshot() {
 	imgCount++;
+	var localImageName = imgCount; //Tratamento devido procedimentos async
 
 	driver.takeScreenshot().then(
 		function(image, err) {
 			if (err) {
 				throw err;
 			} else {
-				fs.writeFile(options.output + '/' + imgCount + '.png', image, 'base64', function(err) {
+				fs.writeFile(options.output + '/' + localImageName + '.png', image, 'base64', function(err) {
 					if (err) {
 						throw err;
 					}
@@ -94,6 +95,7 @@ function takeScreenshot() {
  */
 function takeScreenshotOf(cssSelector, crop, outline) {
 	imgCount++;
+	var localImageName = imgCount; //Tratamento devido procedimentos async
 
 	driver.findElement(By.css(cssSelector)).then(function(el) {
 		if (parseInt(outline)) {
@@ -107,13 +109,13 @@ function takeScreenshotOf(cssSelector, crop, outline) {
 						var img = new Buffer(image, 'base64');
 						gm(img)
 							.crop(rect.width, rect.height, rect.left, rect.top)
-							.write(options.output + '/' + imgCount + '.png', function(err) {
+							.write(options.output + '/' + localImageName + '.png', function(err) {
 								if (err) {
 									throw err;
 								}
 							});
 					} else {
-						fs.writeFile(options.output + '/' + imgCount + '.png', image, 'base64', function(err) {
+						fs.writeFile(options.output + '/' + localImageName + '.png', image, 'base64', function(err) {
 							if (err) {
 								throw err;
 							}
