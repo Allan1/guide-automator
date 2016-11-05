@@ -16,31 +16,33 @@
     ```coffeescript
     sudo wget -qO- https://raw.githubusercontent.com/welbert/guide-automator/master/install_linux.sh | bash -
     ```
+    
   - (Option 2) Manual installation. You need install some binary dependencies.
-    1. Node and npm:
+  
+    1.Node and npm:
     ```
       https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
     ```
-    2. ImageMagick (Usually is already installed):
+    2.ImageMagick (Usually is already installed):
     ```
     https://www.imagemagick.org/script/binary-releases.php#unix
     ```
-    3. wkhtmltopdf
+    3.Wkhtmltopdf
     ```
       http://wkhtmltopdf.org/downloads.html
     ```
-    4. Chrome/Chromium Browser
+    4.Chrome/Chromium Browser
     ```
     -Chrome:
     https://www.google.com/chrome/browser/desktop/index.html
     -Chromium:
     sudo apt-get install chromium-browser
     ```
-    5. Chrome WebDriver
+    5.Chrome WebDriver
     ```
     https://chromedriver.storage.googleapis.com/index.html?path=2.25/
     ```
-    6. guide-automator
+    6.Guide-Automator
     ```
       sudo npm install -g guide-automator
     ```
@@ -49,28 +51,28 @@
 
 * On Windows
 
-  1. Node and npm:
+  1.Node and npm:
   ```
     https://nodejs.org/en/download/
   ```
-  2. ImageMagick (Usually is already installed):
+  2.ImageMagick (Usually is already installed):
   ```
   https://www.imagemagick.org/script/binary-releases.php#windows
   ```
-  3. wkhtmltopdf
+  3.Wkhtmltopdf
   ```
     http://wkhtmltopdf.org/downloads.html
   ```
-  4. Chrome/Chromium Browser
+  4.Chrome/Chromium Browser
   ```
   -Chrome:
   https://www.google.com/chrome/browser/desktop/index.html
   ```
-  5. Chrome WebDriver
+  5.Chrome WebDriver
   ```
   https://chromedriver.storage.googleapis.com/index.html?path=2.25/
   ```
-  6. guide-automator
+  6.Guide-Automator
   ```
     npm install -g guide-automator
   ```
