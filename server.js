@@ -5,27 +5,16 @@
 
 //--Variaveis ------------------
 var fs = require("fs");
-var path = require("path");
-var showdown = require('showdown');
-var wkhtmltopdf = require('wkhtmltopdf');
-var input, output;
-var outputHTMLFile = 'manual.html';
-var outputPDFFile = 'manual.pdf';
-var converter = new showdown.Converter({
-	parseImgDimensions: true
-});
-var html_start = '<!DOCTYPE html><html lang="en"><head><title></title><meta charset="UTF-8"></head><body>';
-var html_end = '</body></html>';
-var wkhtmltopdf_options = {
-	pageSize: 'letter',
-	output: null,
-	toc: true,
-	tocHeaderText: 'Índice',
-	footerRight: "[page]"
+var options = {
+	input: "",
+	output: "",
+	html: true,
+	pdf: true
 };
-
-guideAutomator = require('./bin/guide-automator');
-
+var pjson = require('./package.json');
+var guideAutomator = require('./bin/guide-automator');
+var guideAutomatorExportFile = require('./bin/guide-automator-export');
+//var program = require('commander');
 //-- Fim Variaveis ------------------
 
 //-- EXPORTS -------------
@@ -38,32 +27,36 @@ exports.printMsg = function() {
 
 
 //-- Tratamento de Argumentos --------
-//TODO Pensar em usar o commander
+/*
+program
+	.version(pjson.version)
+	.option('-i, --input', 'Input .md file')
+	.option('-o, --output', 'Output folder')
+	.parse(process.argv);
+*/
 if (!process.argv[2]) {
 	console.log('Input file missing');
 	process.exit();
 }
-input = process.argv[2];
+options.input = process.argv[2];
 
 if (!process.argv[3]) {
 	console.log('Output folder missing');
 	process.exit();
 }
-output = process.argv[3];
-wkhtmltopdf_options.output = output + '/' + outputPDFFile;
+options.output = process.argv[3];
 
-guideAutomator.defineOptions({
-	output: output
-});
+guideAutomator.defineOptions(options);
+guideAutomatorExportFile.defineOptions(options);
 
-fs.stat(input, function(err, stats) {
+fs.stat(options.input, function(err, stats) {
 	if (err) {
 		console.log('Input is not a file');
 		process.exit();
 	}
 });
 
-fs.stat(output, function(err, stats) {
+fs.stat(options.output, function(err, stats) {
 	if (err) {
 		console.log('Output is not a folder');
 		process.exit();
@@ -73,7 +66,7 @@ fs.stat(output, function(err, stats) {
 //-- Fim Tratamento de Argumentos --------
 
 //-- Tratamento dos blocos 'automator'-----
-processInput(input, function(err) {
+processInput(options.input, function(err) {
 	if (err) {
 		throw err;
 	}
@@ -85,33 +78,7 @@ function processInput(input, cb) {
 			return cb(err);
 		}
 		return guideAutomator.guideAutomatorParse(data, function(value, err) {
-			return exportFiles(value, cb); //Limpa os '<replaceSelenium>' e exporta para pdf e html.
-			//TODO Permitir escolher o que exportar, mas por default (pdf e html)
+			guideAutomatorExportFile.exportFiles(value, cb);
 		});
 	});
 }
-//-- Fim Tratamento dos tokens ou execução de funcionalidades 'automator' ------
-
-//-- Tratamento para exportar o produto final ----------
-function exportFiles(text, cb) {
-	var html = html_start + converter.makeHtml(text) + html_end;
-	fs.writeFileSync(output + '/' + outputHTMLFile, html);
-
-	return exportPDF(html, cb);
-}
-
-function exportPDF(html, cb) {
-	var basePath = 'file:///' + path.resolve(output).replace(/\\/g, '/') + '/';
-	html_full_path_imgs = html.replace(/img src="/g, function(match) {
-		return match + basePath;
-	});
-
-	wkhtmltopdf(html_full_path_imgs, wkhtmltopdf_options, function(err, stream) {
-		if (err) return cb(err);
-		else {
-			return cb(null);
-		}
-	});
-}
-
-//-- Fim Tratamento para exportar o produto final ----------
