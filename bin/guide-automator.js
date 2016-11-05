@@ -200,7 +200,7 @@ function replaceBlockWithImage(blockIndex, filename, width) {
 function extractMarkdownAndSelenium(markdownAndCode, cb) {
 	var rePattern = /<automator>([\s\S]+?)<\/automator>/g;
 	markdownText = markdownAndCode.replace(rePattern, function(match, p1, offset, string) {
-		p1 = p1.replace(/\r?\n|\r/g, ''); //TODO Verificar se isso que deu erro ao dar espaço/tab antes de chamar a função
+		p1 = p1.replace(/\r?\n|\r/g, '');
 		seleniumBlocks.push(p1);
 		return '<replaceSelenium>';
 	});
@@ -214,7 +214,7 @@ function compile(seleniumBlocks, cb) {
 		var tokens = seleniumBlocks[i].split(';');
 		for (var o = 0; o < tokens.length; o++) {
 			if (tokens[o] !== null && tokens[o] !== '') {
-				var matches = tokens[o].match(/^(\w+)(?:\(((?:\'.+\'|\d+)(?:,(?:\'.+\'|\d+))*)\))?$/);
+				var matches = tokens[o].trim().match(/^(\w+)(?:\(((?:\'.+\'|\d+)(?:,(?:\'.+\'|\d+))*)\))?$/);
 				if (matches && (cmdsDictionary.indexOf(matches[1]) > -1)) { // IE9
 					cmds[j] = {};
 					cmds[j].cmd = matches[1];
@@ -310,8 +310,8 @@ function replaceRemainingBlocks(cb) {
 	return cb(markdownText);
 }
 
-function guideAutomatorParse(data, cb) {
-	return extractMarkdownAndSelenium(data, function(seleniumBlocks) { //Extração dos blocos 'automator'
+function guideAutomatorParse(mdText, cb) {
+	return extractMarkdownAndSelenium(mdText, function(seleniumBlocks) { //Extração dos blocos 'automator'
 		return execSelenium(seleniumBlocks, function(err) { //Execução e tratamento dos tokens dos blocos 'automator'
 			if (err) {
 				return cb(null, err);

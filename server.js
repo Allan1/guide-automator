@@ -1,67 +1,75 @@
 #! /usr/bin/env node
 
 //TODO Pensar em uma forma de tratar com ```javascript ao invés de <automator>
-//TODO olhar os outros TO DO
 
 //--Variaveis ------------------
 var fs = require("fs");
 var options = {
 	input: "",
-	output: "",
+	output: ".",
 	html: true,
 	pdf: true
 };
 var pjson = require('./package.json');
 var guideAutomator = require('./bin/guide-automator');
 var guideAutomatorExportFile = require('./bin/guide-automator-export');
-//var program = require('commander');
+var program = require('commander');
 //-- Fim Variaveis ------------------
 
 //-- EXPORTS -------------
-//TODO Criar um export que preste, caso dê suporte a export
-exports.printMsg = function() {
-	console.log("This is a message from the demo package");
+exports.defineOptions = function(arg) {
+	Object.keys(options).forEach(function(key) {
+		options[key] = arg[key] || options[key];
+	});
+};
+exports.generateManual = function(text) {
+	if (!text)
+		throw "Text input is missing";
+
+	return guideAutomator.guideAutomatorParse(text, function(value, err) {
+		if (err)
+			throw err;
+		guideAutomatorExportFile.exportFiles(value);
+	});
 };
 
 //-- Fim EXPORTS -------------
 
 
 //-- Tratamento de Argumentos --------
-/*
-program
-	.version(pjson.version)
-	.option('-i, --input', 'Input .md file')
-	.option('-o, --output', 'Output folder')
-	.parse(process.argv);
-*/
-if (!process.argv[2]) {
-	console.log('Input file missing');
-	process.exit();
-}
-options.input = process.argv[2];
 
-if (!process.argv[3]) {
-	console.log('Output folder missing');
+program.version(pjson.version)
+	.option('-i, --input <File.md>', 'Input .md file')
+	.option('-o, --output <Folder>', 'Output destination folder', ".");
+
+program.on('--help', function() {
+	console.log('  Examples:');
+	console.log('');
+	console.log('    $ guide-automator -i input.md -o output/');
+	console.log('    $ guide-automator -i input.md');
+	console.log('');
+});
+
+program.parse(process.argv);
+
+if (!program.input) {
+	console.log('Input file missing. See usage with "' + program._name + ' -h"');
 	process.exit();
 }
-options.output = process.argv[3];
+options.input = program.input;
+options.output = program.output;
 
 guideAutomator.defineOptions(options);
 guideAutomatorExportFile.defineOptions(options);
 
-fs.stat(options.input, function(err, stats) {
-	if (err) {
-		console.log('Input is not a file');
-		process.exit();
-	}
-});
-
-fs.stat(options.output, function(err, stats) {
-	if (err) {
-		console.log('Output is not a folder');
-		process.exit();
-	}
-});
+if (!fs.lstatSync(options.input).isFile()) {
+	console.log('Input is not a file');
+	process.exit();
+}
+if (!fs.lstatSync(options.output).isDirectory()) {
+	console.log('Output is not a folder');
+	process.exit();
+}
 
 //-- Fim Tratamento de Argumentos --------
 
@@ -78,7 +86,9 @@ function processInput(input, cb) {
 			return cb(err);
 		}
 		return guideAutomator.guideAutomatorParse(data, function(value, err) {
-			guideAutomatorExportFile.exportFiles(value, cb);
+			if (err)
+				throw err;
+			guideAutomatorExportFile.exportFiles(value);
 		});
 	});
 }
