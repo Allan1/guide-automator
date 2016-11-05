@@ -25,10 +25,11 @@
     "gm": "^1.22.0",
     "selenium-webdriver": "2.53.3",
     "showdown": "1.4.0",
-    "wkhtmltopdf": "^0.3.3"
+    "wkhtmltopdf": "^0.3.3",
+    "commander": "2.9.0"
   },
   "engines": {
-    "node": "0.10.x",
-    "npm": "1.3.x"
+    "node": "4.6.x",
+    "npm": "2.15.x"
   }
 }

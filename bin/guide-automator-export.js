@@ -39,11 +39,11 @@ function exportFiles(text, cb) {
 			fs.writeFileSync(options.output + '/' + outputHTMLFile, html);
 
 		if (options.pdf)
-			exportPDF(html, cb);
+			exportPDF(html);
 	}
 }
 
-function exportPDF(html, cb) {
+function exportPDF(html) {
 	var basePath = 'file:///' + path.resolve(options.output).replace(/\\/g, '/') + '/';
 	html_full_path_imgs = html.replace(/img src="/g, function(match) {
 		return match + basePath;
