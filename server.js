@@ -7,11 +7,12 @@ var fs = require("fs");
 var options = {
 	input: "",
 	output: ".",
+	outlineStyle: "solid red 3px",
 	html: true,
 	pdf: true
 };
 var pjson = require('./package.json');
-var guideAutomator = require('./bin/guide-automator');
+var guideAutomator = require('./bin/guide-automator-parser');
 var guideAutomatorExportFile = require('./bin/guide-automator-export');
 var program = require('commander');
 //-- Fim Variaveis ------------------
@@ -26,7 +27,7 @@ exports.generateManual = function(text) {
 	if (!text)
 		throw "Text input is missing";
 
-	return guideAutomator.guideAutomatorParse(text, function(value, err) {
+	return guideAutomator.guideAutomatorParser(text, function(value, err) {
 		if (err)
 			throw err;
 		guideAutomatorExportFile.exportFiles(value);
@@ -85,7 +86,7 @@ function processInput(input, cb) {
 		if (err) {
 			return cb(err);
 		}
-		return guideAutomator.guideAutomatorParse(data, function(value, err) {
+		return guideAutomator.guideAutomatorParser(data, function(value, err) {
 			if (err)
 				throw err;
 			guideAutomatorExportFile.exportFiles(value);
