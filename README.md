@@ -19,30 +19,30 @@
     
   - (Option 2) Manual installation. You need install some binary dependencies.
   
-    1.Node and npm:
+    1.[Node and npm:](https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions)
     ```
       https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
     ```
-    2.ImageMagick (Usually is already installed):
+    2.[ImageMagick](https://www.imagemagick.org/script/binary-releases.php#unix) (Usually is already installed):
     ```
-    https://www.imagemagick.org/script/binary-releases.php#unix
+      https://www.imagemagick.org/script/binary-releases.php#unix
     ```
-    3.Wkhtmltopdf
+    3.[Wkhtmltopdf](http://wkhtmltopdf.org/downloads.html)
     ```
       http://wkhtmltopdf.org/downloads.html
     ```
-    4.Chrome/Chromium Browser
+    4.[Chrome](https://www.google.com/chrome/browser/desktop/index.html)/Chromium Browser
     ```
     -Chrome:
-    https://www.google.com/chrome/browser/desktop/index.html
+      https://www.google.com/chrome/browser/desktop/index.html
     -Chromium:
-    sudo apt-get install chromium-browser
+      sudo apt-get install chromium-browser
     ```
-    5.Chrome WebDriver
+    5.[Chrome WebDriver](https://chromedriver.storage.googleapis.com/index.html?path=2.25/)
     ```
-    https://chromedriver.storage.googleapis.com/index.html?path=2.25/
+      https://chromedriver.storage.googleapis.com/index.html?path=2.25/
     ```
-    6.Guide-Automator
+    6.[Guide-Automator](https://www.npmjs.com/package/guide-automator)
     ```
       sudo npm install -g guide-automator
     ```
@@ -51,28 +51,28 @@
 
 * On Windows
 
-  1.Node and npm:
+  1.[Node and npm:](https://nodejs.org/en/download/)
   ```
     https://nodejs.org/en/download/
   ```
-  2.ImageMagick (Usually is already installed):
+  2.[ImageMagick:](https://www.imagemagick.org/script/binary-releases.php#windows)
   ```
-  https://www.imagemagick.org/script/binary-releases.php#windows
+    https://www.imagemagick.org/script/binary-releases.php#windows
   ```
-  3.Wkhtmltopdf
+  3.[Wkhtmltopdf](http://wkhtmltopdf.org/downloads.html)
   ```
     http://wkhtmltopdf.org/downloads.html
   ```
-  4.Chrome/Chromium Browser
+  4.[Chrome](https://www.google.com/chrome/browser/desktop/index.html)
   ```
   -Chrome:
-  https://www.google.com/chrome/browser/desktop/index.html
+    https://www.google.com/chrome/browser/desktop/index.html
   ```
-  5.Chrome WebDriver
+  5.[Chrome WebDriver](https://chromedriver.storage.googleapis.com/index.html?path=2.25/)
   ```
-  https://chromedriver.storage.googleapis.com/index.html?path=2.25/
+    https://chromedriver.storage.googleapis.com/index.html?path=2.25/
   ```
-  6.Guide-Automator
+  6.[Guide-Automator](https://www.npmjs.com/package/guide-automator)
   ```
     npm install -g guide-automator
   ```
