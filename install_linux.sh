@@ -21,8 +21,8 @@ if ! (is_executable npm && is_executable node); then
     curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
     sudo apt-get install -y nodejs
   else
-    errcho "Couldn't determine OS. Please install NodeJS manually, then run this script again."
-    errcho "Visit https://github.com/joyent/node/wiki/installing-node.js-via-package-manager for instructions on how to install NodeJS on your OS."
+    errcho "Couldn't install NodeJS. Please install NodeJS manually, then run this script again."
+    errcho "Visit https://nodejs.org/en/download/package-manager/ for instructions on how to install NodeJS on your OS."
     exit 1    
   fi
   rm setup_6.x
@@ -44,7 +44,7 @@ if ! (is_executable wkhtmltopdf); then
   cd ~
 fi
   
-if ! (is_executable imagemagick); then
+if ! (is_executable convert); then
   echo " # Installing Dependencie IMAGEMAGICK"
   sudo apt-get install imagemagick -y
 fi  
@@ -58,7 +58,6 @@ if ! (is_executable chromedriver) ; then
     wget https://chromedriver.storage.googleapis.com/2.25/chromedriver_linux32.zip -O chromedriver.zip;;
   esac
   
-
   unzip chromedriver.zip
   sudo mv chromedriver /usr/bin/
   rm chromedriver.zip  
