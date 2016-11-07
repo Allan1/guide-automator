@@ -9,11 +9,14 @@ var driver = new webdriver.Builder()
 	.forBrowser('chrome')
 	.build();
 
+var DEFAULT_IMG_WIDTH = '60%';
 var imgCount = 0;
+var returnGuideAutomator = "";
 
 var options = {
 	output: "",
-	outlineStyle: "solid red 3px"
+	outlineStyle: "solid red 3px",
+	legacy: false
 };
 
 module.exports = {
@@ -27,9 +30,25 @@ module.exports = {
 	clickByLinkText: clickByLinkText,
 	sleep: sleep,
 	wait: wait,
-	quit: quit
+	quit: quit,
+	setReturn: setReturn,
+	getReturn: getReturn,
+	executeExternFunction: executeExternFunction
 };
+//TODO Comentar e documentar o uso
+function setReturn(msg) {
+	returnGuideAutomator += msg + "\n";
+}
 
+function executeExternFunction(ExternFunction) {
+	var res = eval(ExternFunction);
+}
+
+function getReturn() {
+	var aux = returnGuideAutomator;
+	returnGuideAutomator = "";
+	return aux;
+}
 
 function defineOptions(arg) {
 	Object.keys(options).forEach(function(key) {
@@ -50,8 +69,9 @@ function get(url) {
  * Tira foto da parte visivel do site acessado
  * @return {string}   Nome da imagem gerada
  */
-function takeScreenshot() {
+function takeScreenshot(width) {
 	imgCount++;
+	width = width || DEFAULT_IMG_WIDTH;
 	var localImageName = imgCount; //Tratamento devido procedimentos async
 
 	driver.takeScreenshot().then(
@@ -67,7 +87,11 @@ function takeScreenshot() {
 			}
 		}
 	);
-	return imgCount + '.png';
+	if (options.legacy)
+		return imgCount + '.png';
+	else {
+		setReturn('![](' + imgCount + '.png =' + width + 'x*)');
+	}
 }
 
 /**
@@ -77,8 +101,9 @@ function takeScreenshot() {
  * @param  {int} outline     [Opicional] 1 - outline ativo, 0 - outline inativo
  * @return {string}             Nome da imagem gerada
  */
-function takeScreenshotOf(cssSelector, crop, outline) {
+function takeScreenshotOf(cssSelector, crop, outline, width) {
 	imgCount++;
+	width = width || DEFAULT_IMG_WIDTH;
 	var localImageName = imgCount; //Tratamento devido procedimentos async
 
 	driver.findElement(By.css(cssSelector)).then(function(el) {
@@ -109,7 +134,11 @@ function takeScreenshotOf(cssSelector, crop, outline) {
 			);
 		});
 	});
-	return imgCount + '.png';
+	if (options.legacy)
+		return imgCount + '.png';
+	else {
+		setReturn('![](' + imgCount + '.png =' + width + 'x*)');
+	}
 }
 
 /**
