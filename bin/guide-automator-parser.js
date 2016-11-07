@@ -192,61 +192,38 @@ function guideAutomatorParser(mdText, cb) {
 //-- Fim Tratamento dos tokens ou execução de funcionalidades 'automator' ------
 
 //-- Tratamento via javascript
-
-function extractJavascript(mdText, cb) {
-	//TODO Regex para ```javascript ``` e criar blocos temporarios no lugar
-	var javascriptBlocks, err;
-	return cb(err, javascriptBlocks);
-}
-
-function executeJavascriptSelenium(javascriptBlocks, cb) {
-	//TODO Injetar as funções do modulo 'guideAutomator' e compilar os blocos
-	for (var n_block = 0; n_block < javascriptBlocks.length; n_block++) {
-		javascriptBlocks[n_block];
-	}
-}
-
-function executeJS(inputJS, functionReturn) {
-	var fs = require("fs");
-	var TEMP_JSFILE = 'tempNodeApp';
-	var TEMP_JSFILE_NUMBER = 1;
-	//Para resolver o problema de chamar varias vezes e sobrescrever o temp.js
-	while (fs.existsSync(TEMP_JSFILE + TEMP_JSFILE_NUMBER + '.js')) {
-		TEMP_JSFILE_NUMBER++;
-	}
-	TEMP_JSFILE += TEMP_JSFILE_NUMBER + '.js';
-
-	fs.writeFileSync(TEMP_JSFILE, inputJS);
-
-	//Execução do código node Async
-	var exec = require('child_process').exec;
-	var cmd = 'node ' + TEMP_JSFILE;
-	exec(cmd, function(error, stdout, stderr) {
-		fs.unlink(TEMP_JSFILE, function(err) {});
-		if (error)
-			return functionReturn(error);
-		return functionReturn(error, stdout.trim(), stderr.trim());
+function replaceBlockWithJsStdout(blockIndex, jsStdout) {
+	var index = 0;
+	markdownText = markdownText.replace(/<replaceSelenium>/g, function(match) {
+		index++;
+		if ((index - 1) === blockIndex) {
+			return '<replaceSelenium>' + jsStdout;
+		}
+		return match;
 	});
-
 }
 
-function executeJSSync(inputJS) {
-	var fs = require("fs");
-	var TEMP_JSFILE = 'tempNodeAppSync.js';
+function extractJavascript(markdownAndCode, cb) {
+	var rePattern = /```javascript([\s\S]+?)```/g;
+	markdownText = markdownAndCode.replace(rePattern, function(match, p1, offset, string) {
+		//TODO Tratar melhor isso, problema ao usar // e linhas abaixo usar comandos
+		p1 = p1.replace(/\r?\n|\r/g, '');
+		seleniumBlocks.push(p1);
+		return '<replaceSelenium>';
+	});
+	return cb(null, markdownText);
+}
 
-	fs.writeFileSync(TEMP_JSFILE, inputJS);
-
-	//Execução do código node Sync
-	var exec = require('child_process').spawnSync;
-	var cmd = 'node ' + TEMP_JSFILE;
-	var result = exec(cmd, {
-		shell: true
-	}); //TODO Verificar funcionamento no Windows
-	fs.unlink(TEMP_JSFILE, function(err) {});
-	return {
-		stdout: result.stdout.toString().trim(),
-		stderr: result.stderr.toString().trim()
-	};
+function executeJavascriptSelenium(markdownText, cb) {
+	//TODO Injetar as funções do modulo 'guideAutomator' e compilar os blocos
+	for (var n_block = 0; n_block < seleniumBlocks.length; n_block++) {
+		guideAutomator.executeExternFunction(seleniumBlocks[n_block]);
+		//guideAutomator.executeExternFunction = new Function(seleniumBlocks[n_block]);
+		//guideAutomator.executeExternFunction();
+		var jsStdout = guideAutomator.getReturn();
+		replaceBlockWithJsStdout(n_block, jsStdout);
+	}
+	return cb(null);
 }
 
 //-- Fim tratamento via javascript

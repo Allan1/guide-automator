@@ -10,7 +10,8 @@ var options = {
 	output: ".",
 	outlineStyle: "solid red 3px",
 	html: true,
-	pdf: true
+	pdf: true,
+	legacy: false
 };
 var pjson = require('./package.json');
 var guideAutomator = require('./bin/guide-automator-parser');
@@ -42,7 +43,8 @@ exports.generateManual = function(text) {
 
 program.version(pjson.version)
 	.option('-i, --input <File.md>', 'Input .md file')
-	.option('-o, --output <Folder>', 'Output destination folder', ".");
+	.option('-o, --output <Folder>', 'Output destination folder', ".")
+	.option('-L, --legacy', 'Use Legacy mode "<automator>"');
 
 program.on('--help', function() {
 	console.log('  Examples:');
@@ -54,12 +56,14 @@ program.on('--help', function() {
 
 program.parse(process.argv);
 
-if (!program.input) {
+Object.keys(options).forEach(function(key) {
+	options[key] = program[key] || options[key];
+});
+
+if (!options.input) {
 	console.log('Input file missing. See usage with "' + program._name + ' -h"');
 	process.exit();
 }
-options.input = program.input;
-options.output = program.output;
 
 guideAutomator.defineOptions(options);
 guideAutomatorExportFile.defineOptions(options);
