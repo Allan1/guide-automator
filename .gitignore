@@ -3,6 +3,6 @@
 
 node_modules\
 node_modules/
-docs\
-docs/
+output\
+output/
 npm-debug.log
