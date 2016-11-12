@@ -21,8 +21,8 @@ var converter = new showdown.Converter({
 
 var options = {
 	output: "",
-	html: true,
-	pdf: true
+	html: false,
+	pdf: false
 };
 
 function defineOptions(arg) {
