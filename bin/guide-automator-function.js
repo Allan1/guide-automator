@@ -31,7 +31,6 @@ module.exports = {
 	sleep: sleep,
 	wait: wait,
 	quit: quit,
-	setReturn: setReturn,
 	getReturn: getReturn,
 	executeExternFunction: executeExternFunction
 };
@@ -39,6 +38,7 @@ module.exports = {
 function setReturn(msg) {
 	returnGuideAutomator += msg + "\n";
 }
+console.log = setReturn;
 
 function executeExternFunction(ExternFunction) {
 	var res = eval(ExternFunction);

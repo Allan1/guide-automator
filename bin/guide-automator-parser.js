@@ -206,8 +206,6 @@ function replaceBlockWithJsStdout(blockIndex, jsStdout) {
 function extractJavascript(markdownAndCode, cb) {
 	var rePattern = /```javascript([\s\S]+?)```/g;
 	markdownText = markdownAndCode.replace(rePattern, function(match, p1, offset, string) {
-		//TODO Tratar melhor isso, problema ao usar // e linhas abaixo usar comandos
-		p1 = p1.replace(/\r?\n|\r/g, '');
 		seleniumBlocks.push(p1);
 		return '<replaceSelenium>';
 	});
@@ -215,11 +213,8 @@ function extractJavascript(markdownAndCode, cb) {
 }
 
 function executeJavascriptSelenium(markdownText, cb) {
-	//TODO Injetar as funções do modulo 'guideAutomator' e compilar os blocos
 	for (var n_block = 0; n_block < seleniumBlocks.length; n_block++) {
 		guideAutomator.executeExternFunction(seleniumBlocks[n_block]);
-		//guideAutomator.executeExternFunction = new Function(seleniumBlocks[n_block]);
-		//guideAutomator.executeExternFunction();
 		var jsStdout = guideAutomator.getReturn();
 		replaceBlockWithJsStdout(n_block, jsStdout);
 	}
