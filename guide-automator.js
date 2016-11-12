@@ -14,13 +14,12 @@ var options = {
 	legacy: false
 };
 var pjson = require('./package.json');
-var guideAutomator = require('./bin/guide-automator-parser');
-var guideAutomatorExportFile = require('./bin/guide-automator-export');
 var program = require('commander');
 //-- Fim Variaveis ------------------
 
 //-- EXPORTS -------------
 exports.defineOptions = function(arg) {
+	options.html = options.pdf = true; //Change to default, but can be change on arg
 	Object.keys(options).forEach(function(key) {
 		options[key] = arg[key] || options[key];
 	});
@@ -59,13 +58,18 @@ program.on('--help', function() {
 
 program.parse(process.argv);
 
+var guideAutomator = require('./bin/guide-automator-parser');
+var guideAutomatorExportFile = require('./bin/guide-automator-export');
+
 Object.keys(options).forEach(function(key) {
 	options[key] = program[key] || options[key];
 });
 
+//if image, others exports type are ignored
 if (options.image)
 	options.pdf = options.html = false;
 else {
+	//if all exports type are false, change to true all
 	if (!options.pdf && !options.html)
 		options.pdf = options.html = true;
 }
