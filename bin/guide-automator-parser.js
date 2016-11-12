@@ -1,6 +1,7 @@
 var options = {
 	output: "",
-	outlineStyle: "solid red 3px"
+	outlineStyle: "solid red 3px",
+	legacy: false
 };
 
 module.exports = {
@@ -160,16 +161,64 @@ function replaceRemainingBlocks(cb) {
 
 function guideAutomatorParser(mdText, cb) {
 	guideAutomator.defineOptions(options);
-	return extractMarkdownAndSelenium(mdText, function(seleniumBlocks) { //Extração dos blocos 'automator'
-		return execSelenium(seleniumBlocks, function(err) { //Execução e tratamento dos tokens dos blocos 'automator'
-			if (err) {
-				return cb(null, err);
-			} else {
+	if (options.legacy) {
+		return extractMarkdownAndSelenium(mdText, function(seleniumBlocks) { //Extração dos blocos 'automator'
+			return execSelenium(seleniumBlocks, function(err) { //Execução e tratamento dos tokens dos blocos 'automator'
+				if (err) {
+					return cb(null, err);
+				} else {
+					guideAutomator.quit().then(function() {
+						return replaceRemainingBlocks(cb);
+					});
+				}
+			});
+		});
+	} else {
+		return extractJavascript(mdText, function(err, javascriptBlocks) {
+			if (err)
+				throw err;
+			return executeJavascriptSelenium(javascriptBlocks, function(err) {
+				if (err)
+					throw err;
+
 				guideAutomator.quit().then(function() {
 					return replaceRemainingBlocks(cb);
 				});
-			}
+
+			});
 		});
-	});
+	}
 }
 //-- Fim Tratamento dos tokens ou execução de funcionalidades 'automator' ------
+
+//-- Tratamento via javascript
+function replaceBlockWithJsStdout(blockIndex, jsStdout) {
+	var index = 0;
+	markdownText = markdownText.replace(/<replaceSelenium>/g, function(match) {
+		index++;
+		if ((index - 1) === blockIndex) {
+			return '<replaceSelenium>' + jsStdout;
+		}
+		return match;
+	});
+}
+
+function extractJavascript(markdownAndCode, cb) {
+	var rePattern = /```javascript([\s\S]+?)```/g;
+	markdownText = markdownAndCode.replace(rePattern, function(match, p1, offset, string) {
+		seleniumBlocks.push(p1);
+		return '<replaceSelenium>';
+	});
+	return cb(null, markdownText);
+}
+
+function executeJavascriptSelenium(markdownText, cb) {
+	for (var n_block = 0; n_block < seleniumBlocks.length; n_block++) {
+		guideAutomator.executeExternFunction(seleniumBlocks[n_block]);
+		var jsStdout = guideAutomator.getReturn();
+		replaceBlockWithJsStdout(n_block, jsStdout);
+	}
+	return cb(null);
+}
+
+//-- Fim tratamento via javascript
