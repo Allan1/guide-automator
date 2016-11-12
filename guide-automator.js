@@ -58,9 +58,6 @@ program.on('--help', function() {
 
 program.parse(process.argv);
 
-var guideAutomator = require('./bin/guide-automator-parser');
-var guideAutomatorExportFile = require('./bin/guide-automator-export');
-
 Object.keys(options).forEach(function(key) {
 	options[key] = program[key] || options[key];
 });
@@ -79,6 +76,8 @@ if (!options.input) {
 	process.exit();
 }
 
+var guideAutomator = require('./bin/guide-automator-parser');
+var guideAutomatorExportFile = require('./bin/guide-automator-export');
 
 guideAutomator.defineOptions(options);
 guideAutomatorExportFile.defineOptions(options);
