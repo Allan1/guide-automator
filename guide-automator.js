@@ -1,7 +1,5 @@
 #! /usr/bin/env node
 
-//TODO Pensar em uma forma de tratar com ```javascript ao invés de <automator>
-//TODO olhar os outros TO DO
 
 //--Variaveis ------------------
 var fs = require("fs");
@@ -9,8 +7,11 @@ var options = {
 	input: "",
 	output: ".",
 	outlineStyle: "solid red 3px",
-	html: true,
-	pdf: true
+	html: false,
+	pdf: false,
+	image: false,
+	/* If true, only image will be export */
+	legacy: false
 };
 var pjson = require('./package.json');
 var guideAutomator = require('./bin/guide-automator-parser');
@@ -42,7 +43,11 @@ exports.generateManual = function(text) {
 
 program.version(pjson.version)
 	.option('-i, --input <File.md>', 'Input .md file')
-	.option('-o, --output <Folder>', 'Output destination folder', ".");
+	.option('-o, --output <Folder>', 'Output destination folder', ".")
+	.option('-P, --pdf', 'Export manual to PDF, default is export for all types', false)
+	.option('-H, --html', 'Export manual to HTML, default is export for all types', false)
+	.option('-I, --image', `Export ONLY manual's image and ignore others types, default is export for all types`, false)
+	.option('-L, --legacy', 'Use Legacy mode "<automator>" [DEPRECATED]');
 
 program.on('--help', function() {
 	console.log('  Examples:');
@@ -54,12 +59,22 @@ program.on('--help', function() {
 
 program.parse(process.argv);
 
-if (!program.input) {
+Object.keys(options).forEach(function(key) {
+	options[key] = program[key] || options[key];
+});
+
+if (options.image)
+	options.pdf = options.html = false;
+else {
+	if (!options.pdf && !options.html)
+		options.pdf = options.html = true;
+}
+
+if (!options.input) {
 	console.log('Input file missing. See usage with "' + program._name + ' -h"');
 	process.exit();
 }
-options.input = program.input;
-options.output = program.output;
+
 
 guideAutomator.defineOptions(options);
 guideAutomatorExportFile.defineOptions(options);
