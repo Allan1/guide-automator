@@ -1,9 +1,9 @@
 # GuideAutomator
 [![npm version](https://badge.fury.io/js/guide-automator.svg)](https://badge.fury.io/js/guide-automator)
 [![Node Version Needed](https://img.shields.io/badge/node-%3E=4.6.1-brightgreen.svg)](https://nodejs.org/en/download/)
-> Automated User Guide Generation with Markdown
 
->> Video Tutorial in Portuguese on [YouTube](https://www.youtube.com/watch?v=zXZyNgJOgdY)
+[![](https://nodei.co/npm/guide-automator.png)](https://nodei.co/npm/guide-automator/)
+> Automated User Guide Generation with Markdown
 
 ----
 ## Installation
@@ -16,9 +16,9 @@
     ```coffeescript
     sudo wget -qO- https://raw.githubusercontent.com/welbert/guide-automator/master/install_linux.sh | bash -
     ```
-    
+
   - (Option 2) Manual installation. You need install some binary dependencies.
-  
+
     1.[Node and npm:](https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions)
     ```
       https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
@@ -78,6 +78,50 @@
   ```
   *Node, ImageMagick,wkhtmltopdf and Chrome WebDriver need to be add in path.*
 
+
+---
+## Getting started
+---
+
+Guide-automator extract javascript tags (\```javascript guide-automator commands ```) from markdown file and generate manual from them. You need use our [API commands](https://github.com/Allan1/guide-automator#api-commands) in markdown file.
+
+Example:
+```
+# This is my github
+
+```javascript
+  get('https://github.com/welbert');
+  takeScreenshot();
+```(<- three back-ticks)
+
+```
+---
+## USAGE
+---
+
+```
+$ node guide-automator.js -h
+
+  Usage: guide-automator [options]
+
+  Options:
+
+
+    -h, --help             output usage information
+    -V, --version          output the version number
+    -i, --input <File.md>  Input .md file
+    -o, --output <Folder>  Output destination folder
+    -P, --pdf              Export manual to PDF, default is export for all types
+    -H, --html             Export manual to HTML, default is export for all types
+    -I, --image            Export ONLY manual's image and ignore others types, default is export for all types
+    -L, --legacy           Use Legacy mode "<automator>" [DEPRECATED]
+
+  Examples:
+
+    $ guide-automator -i input.md -o output/
+    $ guide-automator -i input.md
+```
+
 ---
 ## API commands
 ---
@@ -111,14 +155,14 @@
 ## takeScreenshot
 - Params: `[imageWidth]`
 - Example:
-  - takeScreenshot;
+  - takeScreenshot();
   - takeScreenshot('10%');
 
 ## takeScreenshotOf
 - Params: `<cssSelector>`, `[crop]`, `[outline]`, `[imageWidth]`
 - Example:
   - takeScreenshotOf('#user-content-guideautomator');
-  - takeScreenshotOf('#user-content-guideautomator',0,1);
+  - takeScreenshotOf('#user-content-guideautomator',false,true);
 
 ## fillIn
 - Params: `<cssSelector>`, `<input>`

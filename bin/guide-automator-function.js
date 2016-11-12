@@ -34,12 +34,17 @@ module.exports = {
 	getReturn: getReturn,
 	executeExternFunction: executeExternFunction
 };
-//TODO Comentar e documentar o uso
+
 function setReturn(msg) {
 	returnGuideAutomator += msg + "\n";
 }
+/**
+ * Print text on manual
+ * @param {string}
+ */
 console.log = setReturn;
 
+//Internal function to eval external code
 function executeExternFunction(ExternFunction) {
 	var res = eval(ExternFunction);
 }
