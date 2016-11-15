@@ -2,6 +2,7 @@
 
 
 //--Variaveis ------------------
+var themeList = ['lightBlue', 'lightOrange'];
 var fs = require("fs");
 var options = {
 	input: "",
@@ -12,7 +13,7 @@ var options = {
 	/* If true, only image will be export */
 	image: false,
 	legacy: false,
-	style: null
+	style: 'centerImage'
 };
 var pjson = require('./package.json');
 var program = require('commander');
@@ -48,14 +49,15 @@ program.version(pjson.version)
 	.option('-P, --pdf', 'Export manual to PDF, default is export for all types', false)
 	.option('-H, --html', 'Export manual to HTML, default is export for all types', false)
 	.option('-I, --image', `Export ONLY manual's image and ignore others types, default is export for all types`, false)
-	.option('-s, --style <style.css>', 'Css style to be used in the manual')
+	.option('-s, --style <style.css>', 'Css style to be used in the manual or theme [' + themeList.toString() + ']')
 	.option('-L, --legacy', 'Use Legacy mode "<automator>" [DEPRECATED]');
 
 program.on('--help', function() {
 	console.log('  Examples:');
 	console.log('');
-	console.log('    $ guide-automator -i input.md -o output/');
 	console.log('    $ guide-automator -i input.md');
+	console.log('    $ guide-automator -i input.md -o output/');
+	console.log('    $ guide-automator -i input.md -o output/ -s lightBlue');
 	console.log('');
 });
 
@@ -80,20 +82,13 @@ if (!options.input) {
 	process.exit();
 }
 
-if (!fs.lstatSync(options.input)
-	.isFile()) {
+if (!fs.lstatSync(options.input).isFile()) {
 	console.log('Input is not a file');
 	process.exit();
 }
-if (!fs.lstatSync(options.output)
-	.isDirectory()) {
+if (!fs.lstatSync(options.output).isDirectory()) {
 	console.log('Output is not a folder');
 	process.exit();
-}
-if (options.style && !fs.lstatSync(options.style)
-	.isFile()) {
-	console.log('Style is not a file and will not be used');
-	options.style = null;
 }
 
 var guideAutomator = require('./bin/guide-automator-parser');
