@@ -9,9 +9,10 @@ var options = {
 	outlineStyle: "solid red 3px",
 	html: false,
 	pdf: false,
-	image: false,
 	/* If true, only image will be export */
-	legacy: false
+	image: false,
+	legacy: false,
+	style: null
 };
 var pjson = require('./package.json');
 var program = require('commander');
@@ -20,9 +21,10 @@ var program = require('commander');
 //-- EXPORTS -------------
 exports.defineOptions = function(arg) {
 	options.html = options.pdf = true; //Change to default, but can be change on arg
-	Object.keys(options).forEach(function(key) {
-		options[key] = arg[key] || options[key];
-	});
+	Object.keys(options)
+		.forEach(function(key) {
+			options[key] = arg[key] || options[key];
+		});
 };
 exports.generateManual = function(text) {
 	if (!text)
@@ -46,6 +48,7 @@ program.version(pjson.version)
 	.option('-P, --pdf', 'Export manual to PDF, default is export for all types', false)
 	.option('-H, --html', 'Export manual to HTML, default is export for all types', false)
 	.option('-I, --image', `Export ONLY manual's image and ignore others types, default is export for all types`, false)
+	.option('-s, --style <style.css>', 'Css style to be used in the manual')
 	.option('-L, --legacy', 'Use Legacy mode "<automator>" [DEPRECATED]');
 
 program.on('--help', function() {
@@ -58,9 +61,10 @@ program.on('--help', function() {
 
 program.parse(process.argv);
 
-Object.keys(options).forEach(function(key) {
-	options[key] = program[key] || options[key];
-});
+Object.keys(options)
+	.forEach(function(key) {
+		options[key] = program[key] || options[key];
+	});
 
 //if image, others exports type are ignored
 if (options.image)
@@ -76,20 +80,28 @@ if (!options.input) {
 	process.exit();
 }
 
+if (!fs.lstatSync(options.input)
+	.isFile()) {
+	console.log('Input is not a file');
+	process.exit();
+}
+if (!fs.lstatSync(options.output)
+	.isDirectory()) {
+	console.log('Output is not a folder');
+	process.exit();
+}
+if (options.style && !fs.lstatSync(options.style)
+	.isFile()) {
+	console.log('Style is not a file and will not be used');
+	options.style = null;
+}
+
 var guideAutomator = require('./bin/guide-automator-parser');
 var guideAutomatorExportFile = require('./bin/guide-automator-export');
 
 guideAutomator.defineOptions(options);
 guideAutomatorExportFile.defineOptions(options);
 
-if (!fs.lstatSync(options.input).isFile()) {
-	console.log('Input is not a file');
-	process.exit();
-}
-if (!fs.lstatSync(options.output).isDirectory()) {
-	console.log('Output is not a folder');
-	process.exit();
-}
 
 //-- Fim Tratamento de Argumentos --------
 
