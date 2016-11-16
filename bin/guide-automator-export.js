@@ -35,6 +35,7 @@ function defineOptions(arg) {
 			options[key] = arg[key] || options[key];
 		});
 
+		//TODO Ajustar os css dos temas, cor preta pra texto exceção a titulos, retirar background, windows não ficou transparente
 	if (options.style) {
 		if (options.style.match(themeRegex)) {
 			var path = require('path');
@@ -43,7 +44,7 @@ function defineOptions(arg) {
 				fs.readFileSync(localCss) + '</style></head><body>';
 			wkhtmltopdf_options["user-style-sheet"] = localCss;
 		} else {
-			if (!fs.existsSync(options.style) || !fs.lstatSync(options.input).isFile()) {
+			if (!fs.existsSync(options.style) || !fs.lstatSync(options.style).isFile()) {
 				console.error('Style is not a file or not exists, will not be used');
 			} else {
 				html_start = '<!DOCTYPE html><html lang="en"><head><title></title><meta charset="UTF-8"><style>' +

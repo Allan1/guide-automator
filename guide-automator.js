@@ -82,7 +82,7 @@ if (!options.input) {
 	process.exit();
 }
 
-if (!fs.lstatSync(options.input).isFile()) {
+if (!fs.existsSync(options.input) || !fs.lstatSync(options.input).isFile()) {
 	console.log('Input is not a file');
 	process.exit();
 }

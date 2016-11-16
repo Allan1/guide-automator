@@ -2,11 +2,11 @@ a {
     color: rgb(0, 25, 99) !important;
 }
 
-p, body {
+body {
     padding-top: 5px;
     margin-left: 1em;
     color: rgb(0, 25, 99);
-    background-color: rgba(78, 129, 230, .22);
+    background-color: rgba(78, 129, 230, .1);
 }
 
 img {
