@@ -172,7 +172,7 @@ function submit(cssSelector) {
  * @return {none}
  */
 function click(cssSelector) {
-	driver.findElement(By.css(cmds[i].params[0])).click();
+	driver.findElement(By.css(cssSelector)).click();
 }
 
 /**
