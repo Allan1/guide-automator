@@ -52,15 +52,15 @@ function defineOptions(arg) {
 		if (options.style.match(themeRegex)) {
 			var localCss = folderLib + options.style + '.css';
 			if (options.style != "default") {
-				html_css = fs.readFileSync(localCss);
+				html_css += fs.readFileSync(localCss);
 				updateHtmlStart();
 			}
 			wkhtmltopdf_options["user-style-sheet"] = localCss;
 		} else {
 			if (!fs.existsSync(options.style) || !fs.lstatSync(options.style).isFile()) {
-				console.error('Style is not a file or not exists, will not be used');
+				console.log('Style is not a file or not exists, will not be used');
 			} else {
-				html_css = fs.readFileSync(options.style);
+				html_css += fs.readFileSync(options.style);
 				updateHtmlStart();
 
 				wkhtmltopdf_options['dpi'] = 100;
