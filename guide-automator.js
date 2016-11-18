@@ -13,7 +13,7 @@ var options = {
 	/* If true, only image will be export */
 	image: false,
 	legacy: false,
-	style: 'centerImage'
+	style: 'default'
 };
 var pjson = require('./package.json');
 var program = require('commander');
