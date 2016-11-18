@@ -3,8 +3,6 @@ a {
 }
 
 body {
-    margin-left: 1em;
-    color: black;
     background-color: rgba(206, 222, 255, .05);
 }
 
@@ -13,16 +11,9 @@ h1 {
 }
 
 h2, h3, h4 {
-    margin-left: 2em;
     color: rgb(21, 97, 171);
 }
 
-p {
-    margin-left: 3em;
-    color: black;
-}
-
 img {
-    margin-left: 15%;
-    border: 2px solid rgb(182, 187, 247);
+    border-color: rgb(182, 187, 247);
 }

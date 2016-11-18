@@ -42,7 +42,7 @@ function setReturn(msg) {
  * Print text on manual
  * @param {string}
  */
-console.log = setReturn;
+console.print = setReturn;
 
 //Internal function to eval external code
 function executeExternFunction(ExternFunction) {
