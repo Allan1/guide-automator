@@ -1,20 +1,28 @@
 var fs = require("fs");
-var html_start = '<!DOCTYPE html><html lang="en"><head><title></title><meta charset="UTF-8"></head><body>';
-var html_end = '</body></html>';
-var html_footer = '<div style="bottom:0;font-size: 0.7em;">Made with guide-automator.</div>';
-var outputHTMLFile = 'manual.html';
-var outputPDFFile = 'manual.pdf';
-var themeRegex = /^(centerImage|lightBlue|lightOrange)$/;
-
 var showdown = require('showdown');
 var wkhtmltopdf = require('wkhtmltopdf');
 var path = require("path");
+
+var folderLib = path.join(path.dirname(fs.realpathSync(__filename)), '../lib/style/');
+
+var html_start_body = '<script>' + fs.readFileSync(folderLib + 'TOC.js') + '</script>' +
+	'<div id="toc"></div><div id="contents">';
+var html_css = fs.readFileSync(folderLib + 'default.css');
+var html_start = '';
+var html_end = '</body></html>';
+var html_footer = '</div><div style="bottom:0;font-size: 0.7em;">Made with guide-automator.</div>';
+var outputHTMLFile = 'manual.html';
+var outputPDFFile = 'manual.pdf';
+var themeRegex = /^(default|lightBlue|lightOrange)$/;
+
+
 var wkhtmltopdf_options = {
 	pageSize: 'letter',
 	output: null,
 	toc: true,
 	tocHeaderText: 'Índice',
-	"footer-html": "lib/style/footer.html"
+	"footer-html": "lib/style/footer.html",
+	"header-html": "lib/style/header.html"
 		//footerRight: "[page]"
 };
 var converter = new showdown.Converter({
@@ -26,8 +34,14 @@ var options = {
 	output: "",
 	html: false,
 	pdf: false,
-	style: null
+	style: 'default'
 };
+
+function updateHtmlStart() {
+	//TODO Fix TOC on pdf
+	html_start = '<!DOCTYPE html><html lang="en"><head><title></title><meta charset="UTF-8"><style>' + html_css +
+		'</style></head><body>' + html_start_body;
+}
 
 function defineOptions(arg) {
 	Object.keys(options)
@@ -35,24 +49,26 @@ function defineOptions(arg) {
 			options[key] = arg[key] || options[key];
 		});
 
-		//TODO Ajustar os css dos temas, cor preta pra texto exceção a titulos, retirar background, windows não ficou transparente
+	updateHtmlStart();
 	if (options.style) {
 		if (options.style.match(themeRegex)) {
-			var path = require('path');
-			var localCss = path.join(path.dirname(fs.realpathSync(__filename)), '../lib/style/') + options.style + '.css';
+			var localCss = folderLib + options.style + '.css';
 			html_start = '<!DOCTYPE html><html lang="en"><head><title></title><meta charset="UTF-8"><style>' +
-				fs.readFileSync(localCss) + '</style></head><body>';
+				fs.readFileSync(localCss) + '</style></head><body>' +
+				html_start_body;
+
 			wkhtmltopdf_options["user-style-sheet"] = localCss;
 		} else {
 			if (!fs.existsSync(options.style) || !fs.lstatSync(options.style).isFile()) {
 				console.error('Style is not a file or not exists, will not be used');
 			} else {
 				html_start = '<!DOCTYPE html><html lang="en"><head><title></title><meta charset="UTF-8"><style>' +
-					'body {padding-top: 5px;margin-left: 1em;}' + fs.readFileSync(options.style) + '</style></head><body>';
+					'body {padding-top: 5px;margin-left: 1em;}' + fs.readFileSync(options.style) + '</style></head><body>' +
+					html_start_body;
 
 				wkhtmltopdf_options['dpi'] = 100;
 				wkhtmltopdf_options['image-quality'] = 100;
-				wkhtmltopdf_options["margin-top"] = 0;
+				wkhtmltopdf_options["margin-top"] = '10mm';
 				wkhtmltopdf_options["margin-left"] = 0;
 				wkhtmltopdf_options["margin-right"] = 0;
 				wkhtmltopdf_options['margin-bottom'] = '10mm';
