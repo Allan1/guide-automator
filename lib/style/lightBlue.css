@@ -3,25 +3,23 @@ a {
 }
 
 body {
-    padding-top: 10px;
     margin-left: 1em;
     color: black;
     background-color: rgba(206, 222, 255, .05);
 }
 
 h1 {
-  color: rgb(0, 36, 144);
+    color: rgb(0, 36, 144);
 }
 
-
-h2,h3,h4{
-  margin-left: 2em;
-  color: rgb(21, 97, 171);
+h2, h3, h4 {
+    margin-left: 2em;
+    color: rgb(21, 97, 171);
 }
 
 p {
-  margin-left: 3em;
-  color: black;
+    margin-left: 3em;
+    color: black;
 }
 
 img {
