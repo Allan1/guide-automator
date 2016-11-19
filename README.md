@@ -83,7 +83,7 @@
 ## Getting started
 ---
 
-Guide-automator extract javascript tags (\```javascript guide-automator commands ```) from markdown file and generate manual from them. You need use our [API commands](https://github.com/Allan1/guide-automator#api-commands) in markdown file.
+Guide-automator extract javascript tags (\```javascript guide-automator commands ```) from markdown file and generate manual from them. You need use our [API commands](#api-commands) in markdown file.
 
 Example:
 ```
@@ -92,15 +92,36 @@ Example:
 ```javascript
   get('https://github.com/welbert');
   takeScreenshot();
+  takeScreenshotOf('.avatar',false,true);
 ```(<- three back-ticks)
 
 ```
+More examples with comments [here](./examples/example.md)
+
+You will need know how to extract css selector of Web elements, you can use browser to do that if you dont know how to do this, see below.
+
+* Google Chrome
+
+![Inspect Element](./extras/Inspect Element - Chrome.png)
+
+
+![Copy Css Selector](./extras/Copy Selector - Chrome.png)
+
+* Mozilla Firefox
+
+![Inspect Element](./extras/Inspect Element - Firefox.png)
+
+
+![Copy Css Selector](./extras/Copy Selector - Firefox.png)
+
+After tihs steps, the css selector will be copied to your clipboard
+
 ---
 ## USAGE
 ---
 
 ```
-$ node guide-automator.js -h
+$ guide-automator -h
 
   Usage: guide-automator [options]
 
@@ -114,12 +135,15 @@ $ node guide-automator.js -h
     -P, --pdf              Export manual to PDF, default is export for all types
     -H, --html             Export manual to HTML, default is export for all types
     -I, --image            Export ONLY manual's image and ignore others types, default is export for all types
+    -s, --style <style.css>  Css style to be used in the manual or theme [lightBlue,lightOrange]
     -L, --legacy           Use Legacy mode "<automator>" [DEPRECATED]
+    -d, --debug              Show progress of code
 
   Examples:
 
     $ guide-automator -i input.md -o output/
     $ guide-automator -i input.md
+    $ guide-automator -i input.md -o output/ -s lightBlue
 ```
 
 ---
