@@ -1,6 +1,6 @@
 {
   "name": "guide-automator",
-  "version": "2.1.0",
+  "version": "2.1.5",
   "description": "User guide automator",
   "preferGlobal": true,
   "bin": {
@@ -8,13 +8,12 @@
   },
   "main": "guide-automator.js",
   "scripts": {
-    "test": "node guide-automator.js -h & node guide-automator.js -i examples/example.md -o output/"
+    "test": "node guide-automator.js -i examples/example.md -o output/ -s lightBlue -d"
   },
   "author": "Allan Oliveira",
   "contributors": [
     {
-      "name": "Welbert Serra",
-      "email": "welberts@gmail.com"
+      "name": "Welbert Serra"
     }
   ],
   "license": "ISC",
