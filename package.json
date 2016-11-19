@@ -40,7 +40,7 @@
     "wkhtmltopdf": "^0.3.3"
   },
   "engines": {
-    "node": "4.6.x",
-    "npm": "2.15.x"
+    "node": "6.9.x",
+    "npm": "3.10.x"
   }
 }
