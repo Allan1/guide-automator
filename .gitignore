@@ -1,6 +1,8 @@
 .jshintrc
 node_modules\
 node_modules/
-output\
-output/
+output\*.png
+output\*.html
+output/*.png
+output/*.html
 npm-debug.log
