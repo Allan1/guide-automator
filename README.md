@@ -239,3 +239,9 @@ Params: `<Required>` `[Optional]`
 - Params: `<milleseconds>`
 - Example:
   - sleep(1000);
+
+## console.print
+- Description: Print text on markdown file using javascript blocks
+- Params: `<text>`
+- Example:
+  - console.print('# Title');
