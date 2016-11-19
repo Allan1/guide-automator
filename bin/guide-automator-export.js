@@ -33,7 +33,8 @@ var options = {
 	output: "",
 	html: false,
 	pdf: false,
-	style: 'default'
+	style: 'default',
+	debug: false
 };
 
 function updateHtmlStart() {
@@ -90,6 +91,8 @@ function exportFiles(text, cb) {
 		if (options.pdf)
 			exportPDF(html + html_end);
 	}
+	if (options.debug)
+		console.timeEnd("Guide-Automator");
 }
 
 function exportPDF(html) {
@@ -107,4 +110,4 @@ function exportPDF(html) {
 module.exports = {
 	defineOptions: defineOptions,
 	exportFiles: exportFiles
-};
+};;
