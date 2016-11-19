@@ -8,7 +8,7 @@
   },
   "main": "guide-automator.js",
   "scripts": {
-    "test": "node guide-automator.js -i examples/example.md -o output/"
+    "test": "node guide-automator.js -h & node guide-automator.js -i examples/example.md -o output/"
   },
   "author": "Allan Oliveira",
   "contributors": [
@@ -40,7 +40,7 @@
     "wkhtmltopdf": "^0.3.3"
   },
   "engines": {
-    "node": "6.9.x",
-    "npm": "3.10.x"
+    "node": "~6.9.1",
+    "npm": "~3.10.8"
   }
 }

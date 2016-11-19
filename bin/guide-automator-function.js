@@ -13,6 +13,7 @@ var DEFAULT_IMG_WIDTH = '60%';
 var imgCount = 0;
 var returnGuideAutomator = "";
 
+var GLOBAL = {};
 var options = {
 	output: "",
 	outlineStyle: "solid red 3px",
@@ -36,7 +37,7 @@ module.exports = {
 };
 
 function setReturn(msg) {
-	returnGuideAutomator += msg + "\n";
+	returnGuideAutomator += "\n" + msg + "\n";
 }
 /**
  * Print text on manual
@@ -120,6 +121,7 @@ function takeScreenshotOf(cssSelector, crop, outline, width) {
 		if (outline) {
 			driver.executeScript("arguments[0].style.outline = '" + options.outlineStyle + "'", el);
 		}
+		driver.executeScript("arguments[0].scrollIntoView()", el);
 		driver.executeScript("return arguments[0].getBoundingClientRect()", el).then(function(rect) {
 			driver.takeScreenshot().then(
 				function(image, err) {
@@ -160,6 +162,19 @@ function takeScreenshotOf(cssSelector, crop, outline, width) {
 function fillIn(cssSelector, text) {
 	driver.findElement(By.css(cssSelector)).clear();
 	driver.findElement(By.css(cssSelector)).sendKeys(text);
+}
+
+function getText(cssSelector) {
+	var textResult = "";
+	/*
+	// Need to fix Async's call
+	driver.findElement(By.css(cssSelector)).getText()
+		.then(function(text) {
+			textResult = text;
+		});
+	*/
+
+	return textResult;
 }
 
 /**
