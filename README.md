@@ -114,7 +114,7 @@ Guide-automator extract javascript tags (\```javascript guide-automator commands
 ```(<- three back-ticks)
 
 ```
-More examples with comments [here](./examples/example.md) or see [raw](https://raw.githubusercontent.com/Allan1/guide-automator/master/examples/example.md), if you want to look the output [pdf](./output/manual.pdf)
+More examples with comments [here](./examples/example.md) or see [raw](https://raw.githubusercontent.com/Allan1/guide-automator/master/examples/example.md), if you want to look the output [pdf](./output/manual.pdf) (_This pdf was created using command '$ guide-automator -i examples/example.md -o output/ -s lightBlue'_)
 
 #### Css selector
 You will need know how to extract css selector of Web elements, you can use browser to do that if you dont know how to do this, see below.
