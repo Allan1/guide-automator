@@ -101,7 +101,7 @@
 ---
 
 #### Description
-Guide-automator extract javascript tags (\```javascript guide-automator commands ```) from markdown file and generate manual from them. You need use our [API commands](#api-commands) in markdown file.
+Guide-automator extract javascript tags (\`\`\`javascript guide-automator commands \`\`\`) from markdown file and generate manual from them. You need use our [API commands](#api-commands) in markdown file.
 
 #### Example:
 ```
@@ -111,7 +111,8 @@ Guide-automator extract javascript tags (\```javascript guide-automator commands
   get('https://github.com/welbert');
   takeScreenshot();
   takeScreenshotOf('.avatar',false,true);
-```(<- three back-ticks)
+//(\/ three back-ticks)
+```
 
 ```
 More examples with comments [here](./examples/example.md) or see [raw](https://raw.githubusercontent.com/Allan1/guide-automator/master/examples/example.md), if you want to look the output [pdf](./output/manual.pdf) (_This pdf was created using command '$ guide-automator -i examples/example.md -o output/ -s lightBlue'_)
@@ -121,17 +122,17 @@ You will need know how to extract css selector of Web elements, you can use brow
 
 * Google Chrome
 
-![Inspect Element](./extras/Inspect Element - Chrome.png)
+![Inspect Element](extras/InspectElement-Chrome.png)
 
 
-![Copy Css Selector](./extras/Copy Selector - Chrome.png)
+![Copy Css Selector](extras/CopySelector-Chrome.png)
 
 * Mozilla Firefox
 
-![Inspect Element](./extras/Inspect Element - Firefox.png)
+![Inspect Element](extras/InspectElement-Firefox.png)
 
 
-![Copy Css Selector](./extras/Copy Selector - Firefox.png)
+![Copy Css Selector](extras/CopySelector-Firefox.png)
 
 After this steps, the css selector will be copied to your clipboard
 
@@ -196,7 +197,7 @@ Params: `<Required>` `[Optional]`
   - click('.unstarred > button:nth-child(2)');
 
 ## clickByLinkText
-- Description: Click on link(<a>) text
+- Description: Click on link text(\<a\>)
 - Params: `<linkText>`
 - Example:
   - clickByLinkText('README.md');
