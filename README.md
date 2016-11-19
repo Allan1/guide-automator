@@ -194,7 +194,7 @@ Params: `<Required>` `[Optional]`
 - [submit](#submit)
 - [wait](#wait)
 - [sleep](#sleep)
-
+- [console.print](#consoleprint)
 
 ## get
 - Description: Url to access
