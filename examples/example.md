@@ -3,13 +3,16 @@
 ```javascript
   console.print("## TESTE");
   get('http://www.google.com');
+  //#gb_70
+  takeScreenshotOf('#gb_70',false,1,'10%');
   takeScreenshotOf('#hplogo',0,1);
+  takeScreenshot();
 ```
 
 //LEGACY MODE \/
 <automator>
   get('http://www.google.com');
-  takeScreenshotOf('#hplogo',0,1);
+  takeScreenshotOf('#hplogo',1,0,'10%');
 </automator>
 
 #Pesquisar coisas
