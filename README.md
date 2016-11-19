@@ -1,6 +1,6 @@
 # GuideAutomator
 [![npm version](https://badge.fury.io/js/guide-automator.svg)](https://badge.fury.io/js/guide-automator)
-[![Node Version Needed](https://img.shields.io/badge/node-%3E=4.6.1-brightgreen.svg)](https://nodejs.org/en/download/)
+[![Node Version Needed](https://img.shields.io/badge/node-%3E=6.9.1-brightgreen.svg)](https://nodejs.org/en/download/)
 
 [![](https://nodei.co/npm/guide-automator.png)](https://nodei.co/npm/guide-automator/)
 > Automated User Guide Generation with Markdown
