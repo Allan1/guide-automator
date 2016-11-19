@@ -107,19 +107,24 @@ function takeScreenshot(width) {
  * @return {string}             Nome da imagem gerada
  */
 function takeScreenshotOf(cssSelector, crop, outline, width) {
+	if (options.legacy) {
+		crop = parseInt(crop) == 1;
+		outline = parseInt(outline) == 1;
+	}
+
 	imgCount++;
 	width = width || DEFAULT_IMG_WIDTH;
 	var localImageName = imgCount; //Tratamento devido procedimentos async
 
 	driver.findElement(By.css(cssSelector)).then(function(el) {
-		if (parseInt(outline)) {
+		if (outline) {
 			driver.executeScript("arguments[0].style.outline = '" + options.outlineStyle + "'", el);
 		}
 		driver.executeScript("return arguments[0].getBoundingClientRect()", el).then(function(rect) {
 			driver.takeScreenshot().then(
 				function(image, err) {
 					driver.executeScript("arguments[0].style.outline = ''", el);
-					if (parseInt(crop)) {
+					if (crop) {
 						var img = new Buffer(image, 'base64');
 						gm(img)
 							.crop(rect.width, rect.height, rect.left, rect.top)
