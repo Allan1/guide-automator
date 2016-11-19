@@ -11,10 +11,12 @@
     "test": "node guide-automator.js -i examples/example.md -o output/"
   },
   "author": "Allan Oliveira",
-  "contributors": [{
-    "name": "Welbert Serra",
-    "email": "welberts@gmail.com"
-    }],
+  "contributors": [
+    {
+      "name": "Welbert Serra",
+      "email": "welberts@gmail.com"
+    }
+  ],
   "license": "ISC",
   "repository": {
     "type": "git",
@@ -23,19 +25,19 @@
   "bugs": {
     "url": "https://github.com/Allan1/guide-automator/issues"
   },
-  "keywords":[
+  "keywords": [
     "Automation",
     "Guide",
     "UX"
-    ],
+  ],
   "homepage": "https://github.com/Allan1/guide-automator",
   "dependencies": {
-    "express": "^4.12.4",
-    "gm": "^1.22.0",
-    "selenium-webdriver": "2.53.3",
-    "showdown": "1.4.0",
-    "wkhtmltopdf": "^0.3.3",
-    "commander": "2.9.0"
+    "commander": "^2.9.0",
+    "express": "^4.14.0",
+    "gm": "^1.23.0",
+    "selenium-webdriver": "^3.0.1",
+    "showdown": "^1.5.0",
+    "wkhtmltopdf": "^0.3.3"
   },
   "engines": {
     "node": "4.6.x",
