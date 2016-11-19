@@ -26,6 +26,8 @@
   - Wkhtmltopdf (Need to convert html to pdf)
   - Chrome and Chrome WebDriver (Selenium Web Browser automation)
 
+[back to top](#guideautomator)
+
 #### Linux
 
   - (Option 1)You can install with script
@@ -65,6 +67,7 @@
     ```
   *Node, wkhtmltopdf and Chrome WebDriver need to be add in path.*
 
+[back to top](#guideautomator)
 
 #### Windows
 
@@ -95,6 +98,7 @@
   ```
   *Node, ImageMagick,wkhtmltopdf and Chrome WebDriver need to be add in path.*
 
+[back to top](#guideautomator)
 
 ---
 ## Getting started
@@ -102,6 +106,8 @@
 
 #### Description
 Guide-automator extract javascript tags (\`\`\`javascript guide-automator commands \`\`\`) from markdown file and generate manual from them. You need use our [API commands](#api-commands) in markdown file.
+
+[back to top](#guideautomator)
 
 #### Example:
 ```
@@ -111,11 +117,13 @@ Guide-automator extract javascript tags (\`\`\`javascript guide-automator comman
   get('https://github.com/welbert');
   takeScreenshot();
   takeScreenshotOf('.avatar',false,true);
-//(\/ three back-ticks)
-```
+
+```(<- three back-ticks)
 
 ```
 More examples with comments [here](./examples/example.md) or see [raw](https://raw.githubusercontent.com/Allan1/guide-automator/master/examples/example.md), if you want to look the output [pdf](./output/manual.pdf) (_This pdf was created using command '$ guide-automator -i examples/example.md -o output/ -s lightBlue'_)
+
+[back to top](#guideautomator)
 
 #### Css selector
 You will need know how to extract css selector of Web elements, you can use browser to do that if you dont know how to do this, see below.
@@ -135,6 +143,8 @@ You will need know how to extract css selector of Web elements, you can use brow
 ![Copy Css Selector](extras/CopySelector-Firefox.png)
 
 After this steps, the css selector will be copied to your clipboard
+
+[back to top](#guideautomator)
 
 ---
 ## USAGE
@@ -166,6 +176,8 @@ $ guide-automator -h
     $ guide-automator -i input.md -o output/ -s lightBlue
 
 ```
+
+[back to top](#guideautomator)
 
 ---
 ## API commands
@@ -246,3 +258,5 @@ Params: `<Required>` `[Optional]`
 - Params: `<text>`
 - Example:
   - console.print('# Title');
+
+[back to top](#guideautomator)
