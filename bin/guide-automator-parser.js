@@ -1,7 +1,8 @@
 var options = {
 	output: "",
 	outlineStyle: "solid red 3px",
-	legacy: false
+	legacy: false,
+	debug: false
 };
 
 module.exports = {
@@ -182,6 +183,11 @@ function guideAutomatorParser(mdText, cb) {
 					throw err;
 
 				guideAutomator.quit().then(function() {
+					if (options.debug) {
+						console.log("");
+						console.timeEnd('Selenium');
+					}
+
 					return replaceRemainingBlocks(cb);
 				});
 
@@ -190,7 +196,7 @@ function guideAutomatorParser(mdText, cb) {
 	}
 }
 //-- Fim Tratamento dos tokens ou execução de funcionalidades 'automator' ------
-
+//--------------------------------------------------------------------
 //-- Tratamento via javascript
 function replaceBlockWithJsStdout(blockIndex, jsStdout) {
 	var index = 0;
@@ -213,6 +219,12 @@ function extractJavascript(markdownAndCode, cb) {
 }
 
 function executeJavascriptSelenium(markdownText, cb) {
+	if (options.debug) {
+		console.log(`File's JSBlocks: ` + seleniumBlocks.length);
+		console.log("");
+		console.time('Selenium');
+	}
+
 	for (var n_block = 0; n_block < seleniumBlocks.length; n_block++) {
 		guideAutomator.executeExternFunction(seleniumBlocks[n_block]);
 		var jsStdout = guideAutomator.getReturn();

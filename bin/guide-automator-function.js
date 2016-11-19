@@ -17,7 +17,8 @@ var GLOBAL = {};
 var options = {
 	output: "",
 	outlineStyle: "solid red 3px",
-	legacy: false
+	legacy: false,
+	debug: false
 };
 
 module.exports = {
@@ -80,15 +81,20 @@ function takeScreenshot(width) {
 	width = width || DEFAULT_IMG_WIDTH;
 	var localImageName = imgCount; //Tratamento devido procedimentos async
 
+	if (options.debug)
+		console.time("Screenshot " + localImageName);
+
 	driver.takeScreenshot().then(
 		function(image, err) {
 			if (err) {
 				throw err;
 			} else {
 				fs.writeFile(options.output + '/' + localImageName + '.png', image, 'base64', function(err) {
-					if (err) {
+					if (err)
 						throw err;
-					}
+
+					if (options.debug)
+						console.timeEnd("Screenshot " + localImageName);
 				});
 			}
 		}
@@ -117,6 +123,9 @@ function takeScreenshotOf(cssSelector, crop, outline, width) {
 	width = width || DEFAULT_IMG_WIDTH;
 	var localImageName = imgCount; //Tratamento devido procedimentos async
 
+	if (options.debug)
+		console.time("ScreenshotOF " + localImageName);
+
 	driver.findElement(By.css(cssSelector)).then(function(el) {
 		if (outline) {
 			driver.executeScript("arguments[0].style.outline = '" + options.outlineStyle + "'", el);
@@ -131,15 +140,19 @@ function takeScreenshotOf(cssSelector, crop, outline, width) {
 						gm(img)
 							.crop(rect.width, rect.height, rect.left, rect.top)
 							.write(options.output + '/' + localImageName + '.png', function(err) {
-								if (err) {
+								if (err)
 									throw err;
-								}
+
+								if (options.debug)
+									console.timeEnd("ScreenshotOF " + localImageName);
 							});
 					} else {
 						fs.writeFile(options.output + '/' + localImageName + '.png', image, 'base64', function(err) {
-							if (err) {
+							if (err)
 								throw err;
-							}
+
+							if (options.debug)
+								console.timeEnd("ScreenshotOF " + localImageName);
 						});
 					}
 				}

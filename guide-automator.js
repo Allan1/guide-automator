@@ -5,6 +5,7 @@
 var themeList = ['lightBlue', 'lightOrange'];
 var fs = require("fs");
 var options = {
+	debug: false,
 	input: "",
 	output: ".",
 	outlineStyle: "solid red 3px",
@@ -50,7 +51,8 @@ program.version(pjson.version)
 	.option('-H, --html', 'Export manual to HTML, default is export for all types', false)
 	.option('-I, --image', `Export ONLY manual's image and ignore others types, default is export for all types`, false)
 	.option('-s, --style <style.css>', 'Css style to be used in the manual or theme [' + themeList.toString() + ']')
-	.option('-L, --legacy', 'Use Legacy mode "<automator>" [DEPRECATED]');
+	.option('-L, --legacy', 'Use Legacy mode "<automator>" [DEPRECATED]')
+	.option('-d, --debug', 'Show progress of code');
 
 program.on('--help', function() {
 	console.log('  Examples:');
@@ -63,10 +65,23 @@ program.on('--help', function() {
 
 program.parse(process.argv);
 
+if (program.debug) {
+	console.log("Version: " + pjson.version);
+	console.log("Options Used.:");
+}
+
 Object.keys(options)
 	.forEach(function(key) {
 		options[key] = program[key] || options[key];
+		if (options.debug)
+			console.log("	" + key + ": " + options[key].toString());
 	});
+
+if (options.debug) {
+	console.log("--------");
+	console.time("Guide-Automator");
+}
+
 
 //if image, others exports type are ignored
 if (options.image)
@@ -109,9 +124,12 @@ processInput(options.input, function(err) {
 
 function processInput(input, cb) {
 	fs.readFile(input, 'utf8', (err, data) => { //Leitura do arquivo
-		if (err) {
+		if (err)
 			return cb(err);
-		}
+
+		if (options.debug)
+			console.log(`File's line: ` + data.split(/\r\n|\r|\n/).length);
+
 		return guideAutomator.guideAutomatorParser(data, function(value, err) {
 			if (err)
 				throw err;
