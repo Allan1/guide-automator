@@ -33,8 +33,8 @@ To create new account, click on 'Sign Up' and fill in the form's fields.
   sleep(500);
 
   //Fill in css selector with text
-  fillIn('#user_login','YourUserName');
-  fillIn('#user_email','youremail@email.com');
+  fillIn('#user_login','PutYourUserName');
+  fillIn('#user_email','yourEmail@email.com');
   fillIn('#user_password','SuperSecretPassword');
 
   //Print text on markdown file

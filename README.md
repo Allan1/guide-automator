@@ -75,7 +75,7 @@
   ```
     https://nodejs.org/en/download/
   ```
-  2.[ImageMagick:](https://www.imagemagick.org/script/binary-releases.php#windows)
+  2.[ImageMagick:](https://www.imagemagick.org/script/binary-releases.php#windows) (Check to install legacy utilities)
   ```
     https://www.imagemagick.org/script/binary-releases.php#windows
   ```
@@ -96,7 +96,7 @@
   ```
     npm install -g guide-automator
   ```
-  *Node, ImageMagick,wkhtmltopdf and Chrome WebDriver need to be add in path.*
+  *Node, ImageMagick(convert.exe), Wkhtmltopdf and Chrome WebDriver need to be add in path.*
 
 [back to top](#guideautomator)
 
