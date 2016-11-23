@@ -17,11 +17,11 @@ GLOBAL["SITE"] = 'github';
 
 After this, you'll need create account, if you don't have, if you have, jump for next topic.
 
-To create new account, click on 'Sign Up' and fill in the form's fields.
+To create new account, click on 'Sign Up' or fill in the form's fields.
 
 ```javascript
-  //Take screenshot of css selector, with no crop and with outline
-  takeScreenshotOf('a.site-header-actions-btn:nth-child(1)',false,true);
+  //Take screenshot of css selectors, with no crop and with outline
+  takeScreenshotOf(['a.site-header-actions-btn:nth-child(1)','.home-hero-signup'],false,true);
 
   //Click in button 'sign out'
   click('a.site-header-actions-btn:nth-child(1)');
