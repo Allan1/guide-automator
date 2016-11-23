@@ -5,4 +5,6 @@ output\*.png
 output\*.html
 output/*.png
 output/*.html
+output\*.pdf
+output/*.pdf
 npm-debug.log
