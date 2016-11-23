@@ -227,6 +227,7 @@ Params: `<Required>` `[Optional]`
 - Example:
   - takeScreenshotOf('#user-content-guideautomator');
   - takeScreenshotOf('#user-content-guideautomator',false,true);
+  - takeScreenshotOf(['#user-content-guideautomator','.avatar'],false,true); //Multiple cssSelector only for outline
 
 ## fillIn
 - Description: Fill in field element

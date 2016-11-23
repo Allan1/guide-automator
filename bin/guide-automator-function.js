@@ -118,7 +118,11 @@ function takeScreenshotOf(cssSelector, crop, outline, width) {
 		crop = parseInt(crop) == 1;
 		outline = parseInt(outline) == 1;
 	}
-
+	var cssSelectors;
+	if (cssSelector.constructor === Array) {
+		cssSelectors = cssSelector;
+		cssSelector = cssSelectors[0];
+	}
 	imgCount++;
 	width = width || DEFAULT_IMG_WIDTH;
 	var localImageName = imgCount; //Tratamento devido procedimentos async
@@ -129,12 +133,28 @@ function takeScreenshotOf(cssSelector, crop, outline, width) {
 	driver.findElement(By.css(cssSelector)).then(function(el) {
 		if (outline) {
 			driver.executeScript("arguments[0].style.outline = '" + options.outlineStyle + "'", el);
+			if (cssSelectors) {
+				cssSelectors.forEach(element => {
+					driver.findElement(By.css(element)).then(function(el1) {
+						driver.executeScript("arguments[0].style.outline = '" + options.outlineStyle + "'", el1);
+					});
+				});
+			}
 		}
 		driver.executeScript("arguments[0].scrollIntoView()", el);
 		driver.executeScript("return arguments[0].getBoundingClientRect()", el).then(function(rect) {
 			driver.takeScreenshot().then(
 				function(image, err) {
-					driver.executeScript("arguments[0].style.outline = ''", el);
+					if (outline) {
+						driver.executeScript("arguments[0].style.outline = ''", el);
+						if (cssSelectors) {
+							cssSelectors.forEach(element => {
+								driver.findElement(By.css(element)).then(function(el1) {
+									driver.executeScript("arguments[0].style.outline = ''", el1);
+								});
+							});
+						}
+					}
 					if (crop) {
 						var img = new Buffer(image, 'base64');
 						gm(img)
