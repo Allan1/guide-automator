@@ -20,8 +20,8 @@ var wkhtmltopdf_options = {
 	output: null,
 	toc: true,
 	tocHeaderText: 'Índice',
-	"footer-html": "lib/style/footer.html",
-	"header-html": "lib/style/header.html"
+	"footer-html": folderLib+"footer.html",
+	"header-html": folderLib+"header.html"
 		//footerRight: "[page]"
 };
 var converter = new showdown.Converter({
