@@ -17,7 +17,7 @@
   - [Firefox extension](#firefox-extension)
 - [Usage](#usage)
 - [Api commands](#api-commands)
-- [Using GD.driver](#using-gd.driver)
+- [Using GD.driver](#using-gddriver)
 
 ----
 ## Installation
@@ -278,6 +278,7 @@ Params: `<Required>` `[Optional]`
 ---
 _This topic is for more complex cases or personal needs that guide-automator not support_
 
+Example:
 ```
 GD.driver.actions().
   mouseMove({x:216, y:41}).
