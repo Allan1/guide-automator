@@ -14,8 +14,10 @@
   - [Description](#description)
   - [Example](#example)
   - [Css selector](#css-selector)
+  - [Firefox extension](#firefox-extension)
 - [Usage](#usage)
 - [Api commands](#api-commands)
+- [Using Driver](#using-driver)
 
 ----
 ## Installation
@@ -147,6 +149,14 @@ After this steps, the css selector will be copied to your clipboard
 [back to top](#guideautomator)
 
 ---
+## Firefox extension
+---
+
+[Guide-automator-addon](https://addons.mozilla.org/en-US/firefox/addon/guide-automator/)
+
+[back to top](#guideautomator)
+
+---
 ## USAGE
 ---
 
@@ -259,5 +269,21 @@ Params: `<Required>` `[Optional]`
 - Params: `<text>`
 - Example:
   - console.print('# Title');
+
+[back to top](#guideautomator)
+
+---
+# Using driver
+---
+_This topic is for more complex cases or personal needs that guide-automator not support_
+
+```
+GD.driver.actions().
+  mouseMove({x:216, y:41}).
+  click().
+  perform();
+```
+
+[Selenium Documetation](https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/chrome_exports_Driver.html)
 
 [back to top](#guideautomator)
