@@ -17,7 +17,7 @@
   - [Firefox extension](#firefox-extension)
 - [Usage](#usage)
 - [Api commands](#api-commands)
-- [Using Driver](#using-driver)
+- [Using GD.driver](#using-gd.driver)
 
 ----
 ## Installation
@@ -151,6 +151,7 @@ After this steps, the css selector will be copied to your clipboard
 ---
 ## Firefox extension
 ---
+You can use the firefox addon to make easy the construction of blocks
 
 [Guide-automator-addon](https://addons.mozilla.org/en-US/firefox/addon/guide-automator/)
 
@@ -273,7 +274,7 @@ Params: `<Required>` `[Optional]`
 [back to top](#guideautomator)
 
 ---
-# Using driver
+# Using GD.driver
 ---
 _This topic is for more complex cases or personal needs that guide-automator not support_
 
@@ -284,6 +285,6 @@ GD.driver.actions().
   perform();
 ```
 
-[Selenium Documetation](https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/chrome_exports_Driver.html)
+[Selenium Documentation](https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/chrome_exports_Driver.html)
 
 [back to top](#guideautomator)
