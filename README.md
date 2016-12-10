@@ -149,11 +149,13 @@ After this steps, the css selector will be copied to your clipboard
 [back to top](#guideautomator)
 
 ---
-## Firefox extension
+#### Firefox extension
 ---
 You can use the firefox addon to make easy the construction of blocks
 
 [Guide-automator-addon](https://addons.mozilla.org/en-US/firefox/addon/guide-automator/)
+
+![Context](https://addons.cdn.mozilla.net/user-media/previews/full/180/180647.png?modified=1480797935)
 
 [back to top](#guideautomator)
 
@@ -207,32 +209,32 @@ Params: `<Required>` `[Optional]`
 - [sleep](#sleep)
 - [console.print](#consoleprint)
 
-## get
+### get
 - Description: Url to access
 - Params: `<url>`
 - Example:
   - get('https://github.com/welbert');
 
-## click
+### click
 - Description: Click on element
 - Params: `<cssSelector>`
 - Example:
   - click('.unstarred > button:nth-child(2)');
 
-## clickByLinkText
+### clickByLinkText
 - Description: Click on link text(\<a\>)
 - Params: `<linkText>`
 - Example:
   - clickByLinkText('README.md');
 
-## takeScreenshot
+### takeScreenshot
 - Description: Take Screenshot
 - Params: `[imageWidth]`
 - Example:
   - takeScreenshot();
   - takeScreenshot('10%');
 
-## takeScreenshotOf
+### takeScreenshotOf
 - Description: Take Screenshot of specific element
 - Params: `<cssSelector>`, `[crop]`, `[outline]`, `[imageWidth]`
 - Example:
@@ -240,32 +242,32 @@ Params: `<Required>` `[Optional]`
   - takeScreenshotOf('#user-content-guideautomator',false,true);
   - takeScreenshotOf(['#user-content-guideautomator','.avatar'],false,true); //Multiple cssSelector only for outline
 
-## fillIn
+### fillIn
 - Description: Fill in field element
 - Params: `<cssSelector>`, `<input>`
 - Example:
   - fillIn('.header-search-input','guide-automator');
 
-## submit
+### submit
 - Description: Submit a form
 - Params: `<cssSelector>`
 - Example:
   - submit('.js-site-search-form');
 
-## wait
+### wait
 - Description: Wait element load on page
 - Params: `<cssSelector>`, `[timeOut]`
 - Example:
   - wait('.commit-author-section');
   - wait('.commit-author-section',2000);
 
-## sleep
+### sleep
 - Description: Sleep for a while
 - Params: `<milleseconds>`
 - Example:
   - sleep(1000);
 
-## console.print
+### console.print
 - Description: Print text on markdown file using javascript blocks
 - Params: `<text>`
 - Example:
@@ -274,7 +276,7 @@ Params: `<Required>` `[Optional]`
 [back to top](#guideautomator)
 
 ---
-# Using GD.driver
+## Using GD.driver
 ---
 _This topic is for more complex cases or personal needs that guide-automator not support_
 
@@ -285,6 +287,8 @@ GD.driver.actions().
   click().
   perform();
 ```
+
+See [raw](https://raw.githubusercontent.com/Allan1/guide-automator/master/examples/driver-example.md)
 
 [Selenium Documentation](https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/chrome_exports_Driver.html)
 
