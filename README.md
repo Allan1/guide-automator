@@ -24,8 +24,8 @@
 ----
 #### Prerequisites
   - Nodejs && npm (Compiler)
-  - ImageMagick (Need to crop the image)
-  - Wkhtmltopdf (Need to convert html to pdf)
+  - ImageMagick (Needed for cropping images)
+  - Wkhtmltopdf (Needed for converting html to pdf)
   - Chrome and Chrome WebDriver (Selenium Web Browser automation)
 
 [back to top](#guideautomator)
@@ -128,7 +128,7 @@ More examples with comments [here](./examples/example.md) or see [raw](https://r
 [back to top](#guideautomator)
 
 #### Css selector
-You will need know how to extract css selector of Web elements, you can use browser to do that if you dont know how to do this, see below.
+You will need know how to extract css selector of Web elements, you can use the browser to do that. If you dont know how to do this, see below.
 
 * Google Chrome
 
@@ -278,7 +278,7 @@ Params: `<Required>` `[Optional]`
 ---
 ## Using GD.driver
 ---
-_This topic is for more complex cases or personal needs that guide-automator not support_
+_This topic is for more complex cases or personal needs that guide-automator does not support_
 
 Example:
 ```
