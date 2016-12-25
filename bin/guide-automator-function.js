@@ -1,4 +1,7 @@
 var __fs = require("fs");
+const {
+	VM
+} = require('vm2');
 var __gm = require('gm').subClass({
 	imageMagick: true
 });
@@ -50,6 +53,22 @@ module.exports = {
 	executeExternFunction: executeExternFunction
 };
 
+var sandbox = {
+	GD: GD,
+	get: get,
+	takeScreenshot: takeScreenshot,
+	takeScreenshotOf: takeScreenshotOf,
+	fillIn: fillIn,
+	submit: submit,
+	click: click,
+	clickByLinkText: clickByLinkText,
+	sleep: sleep,
+	wait: wait,
+	quit: quit,
+	getReturn: getReturn,
+	console: console
+};
+
 function setReturn(msg) {
 	__returnGuideAutomator += "\n" + msg + "\n";
 }
@@ -61,7 +80,10 @@ console.print = setReturn;
 
 //Internal function to eval external code
 function executeExternFunction(ExternFunction) {
-	var res = eval(ExternFunction);
+	const vm = new VM({
+		sandbox: sandbox
+	});
+	var res = vm.run(ExternFunction);
 }
 
 function getReturn() {

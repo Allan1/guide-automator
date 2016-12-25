@@ -7,4 +7,6 @@ output/*.png
 output/*.html
 output\*.pdf
 output/*.pdf
+test/
+test\
 npm-debug.log
