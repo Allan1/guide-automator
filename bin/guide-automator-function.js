@@ -21,7 +21,6 @@ var GLOBAL = {};
 var options = {
 	output: "",
 	outlineStyle: "solid red 3px",
-	legacy: false,
 	debug: false
 };
 
@@ -39,17 +38,8 @@ var GD = {
 
 module.exports = {
 	defineOptions: defineOptions,
-	get: get,
-	takeScreenshot: takeScreenshot,
-	takeScreenshotOf: takeScreenshotOf,
-	fillIn: fillIn,
-	submit: submit,
-	click: click,
-	clickByLinkText: clickByLinkText,
-	sleep: sleep,
-	wait: wait,
-	quit: quit,
 	getReturn: getReturn,
+	quit: quit,
 	executeExternFunction: executeExternFunction
 };
 
@@ -134,11 +124,8 @@ function takeScreenshot(width) {
 			}
 		}
 	);
-	if(options.legacy)
-		return __imgCount + '.png';
-	else {
-		setReturn('![](' + __imgCount + '.png =' + width + 'x*)');
-	}
+	setReturn('![](' + __imgCount + '.png =' + width + 'x*)');
+
 }
 
 /**
@@ -149,10 +136,6 @@ function takeScreenshot(width) {
  * @return {string}             Nome da imagem gerada
  */
 function takeScreenshotOf(cssSelector, crop, outline, width) {
-	if(options.legacy) {
-		crop = parseInt(crop) == 1;
-		outline = parseInt(outline) == 1;
-	}
 	var cssSelectors;
 	if(cssSelector.constructor === Array) {
 		cssSelectors = cssSelector;
@@ -214,11 +197,8 @@ function takeScreenshotOf(cssSelector, crop, outline, width) {
 			);
 		});
 	});
-	if(options.legacy)
-		return __imgCount + '.png';
-	else {
-		setReturn('![](' + __imgCount + '.png =' + width + 'x*)');
-	}
+	setReturn('![](' + __imgCount + '.png =' + width + 'x*)');
+
 }
 
 /**
