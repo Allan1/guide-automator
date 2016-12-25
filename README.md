@@ -179,7 +179,6 @@ $ guide-automator -h
     -H, --html             Export manual to HTML, default is export for all types
     -I, --image            Export ONLY manual's image and ignore others types, default is export for all types
     -s, --style <style.css>  Css style to be used in the manual or theme [lightBlue,lightOrange]
-    -L, --legacy           Use Legacy mode "<automator>" [DEPRECATED]
     -d, --debug              Show progress of code
 
   Examples:
@@ -208,6 +207,7 @@ Params: `<Required>` `[Optional]`
 - [wait](#wait)
 - [sleep](#sleep)
 - [console.print](#consoleprint)
+- [pageContext](#pagecontext)
 
 ### get
 - Description: Url to access
@@ -272,6 +272,14 @@ Params: `<Required>` `[Optional]`
 - Params: `<text>`
 - Example:
   - console.print('# Title');
+
+### pageContext
+- Description: Need to change context to iframe or context default(Main page)
+- Params: `[cssSelector]`
+- Example:
+  - pageContext('#Iframe-CssSelector');
+  - pageContext('default'); //Equivalent to pageContext();
+  - pageContext();
 
 [back to top](#guideautomator)
 
