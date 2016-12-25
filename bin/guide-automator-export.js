@@ -20,8 +20,8 @@ var wkhtmltopdf_options = {
 	output: null,
 	toc: true,
 	tocHeaderText: 'Índice',
-	"footer-html": folderLib+"footer.html",
-	"header-html": folderLib+"header.html"
+	"footer-html": folderLib + "footer.html",
+	"header-html": folderLib + "header.html"
 		//footerRight: "[page]"
 };
 var converter = new showdown.Converter({
@@ -49,16 +49,16 @@ function defineOptions(arg) {
 		});
 	//TODO Fazer com que o css utilizem sempre o default e junto com os outros
 	updateHtmlStart();
-	if (options.style) {
-		if (options.style.match(themeRegex)) {
+	if(options.style) {
+		if(options.style.match(themeRegex)) {
 			var localCss = folderLib + options.style + '.css';
-			if (options.style != "default") {
+			if(options.style != "default") {
 				html_css += fs.readFileSync(localCss);
 				updateHtmlStart();
 			}
 			wkhtmltopdf_options["user-style-sheet"] = localCss;
 		} else {
-			if (!fs.existsSync(options.style) || !fs.lstatSync(options.style).isFile()) {
+			if(!fs.existsSync(options.style) || !fs.lstatSync(options.style).isFile()) {
 				console.log('Style is not a file or not exists, will not be used');
 			} else {
 				html_css += fs.readFileSync(options.style);
@@ -83,15 +83,15 @@ function defineOptions(arg) {
 }
 
 function exportFiles(text, cb) {
-	if (options.html || options.pdf) {
+	if(options.html || options.pdf) {
 		var html = html_start + converter.makeHtml(text);
-		if (options.html)
+		if(options.html)
 			fs.writeFileSync(options.output + '/' + outputHTMLFile, html + html_footer + html_end);
 
-		if (options.pdf)
+		if(options.pdf)
 			exportPDF(html + html_end);
 	}
-	if (options.debug)
+	if(options.debug)
 		console.timeEnd("Guide-Automator");
 }
 
@@ -103,11 +103,11 @@ function exportPDF(html) {
 	});
 
 	wkhtmltopdf(html_full_path_imgs, wkhtmltopdf_options, function(err, stream) {
-		if (err) throw err;
+		if(err) throw err;
 	});
 }
 
 module.exports = {
 	defineOptions: defineOptions,
 	exportFiles: exportFiles
-};;
+};
