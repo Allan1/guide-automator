@@ -56,7 +56,8 @@ var sandbox = {
 	wait: wait,
 	quit: quit,
 	getReturn: getReturn,
-	console: console
+	console: console,
+	pageContext: pageContext
 };
 
 function setReturn(msg) {
@@ -270,6 +271,13 @@ function sleep(sleepTime) {
 function wait(cssSelector, timeOut) {
 	var timeLimit = timeOut || 5000;
 	GD.driver.wait(GD.until.elementLocated(GD.by.css(cssSelector)), timeLimit);
+}
+
+function pageContext(cssSelector) {
+	if(!cssSelector || cssSelector.toString().toLowerCase() === 'default')
+		GD.driver.switchTo().defaultContent();
+	else
+		GD.driver.switchTo().frame(GD.driver.findElement(GD.by.css(cssSelector)));
 }
 
 function quit() {
