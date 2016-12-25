@@ -1,4 +1,7 @@
 var __fs = require("fs");
+const {
+	VM
+} = require('vm2');
 var __gm = require('gm').subClass({
 	imageMagick: true
 });
@@ -18,7 +21,6 @@ var GLOBAL = {};
 var options = {
 	output: "",
 	outlineStyle: "solid red 3px",
-	legacy: false,
 	debug: false
 };
 
@@ -36,6 +38,13 @@ var GD = {
 
 module.exports = {
 	defineOptions: defineOptions,
+	getReturn: getReturn,
+	quit: quit,
+	executeExternFunction: executeExternFunction
+};
+
+var sandbox = {
+	GD: GD,
 	get: get,
 	takeScreenshot: takeScreenshot,
 	takeScreenshotOf: takeScreenshotOf,
@@ -47,7 +56,8 @@ module.exports = {
 	wait: wait,
 	quit: quit,
 	getReturn: getReturn,
-	executeExternFunction: executeExternFunction
+	console: console,
+	pageContext: pageContext
 };
 
 function setReturn(msg) {
@@ -61,7 +71,10 @@ console.print = setReturn;
 
 //Internal function to eval external code
 function executeExternFunction(ExternFunction) {
-	var res = eval(ExternFunction);
+	const vm = new VM({
+		sandbox: sandbox
+	});
+	var res = vm.run(ExternFunction);
 }
 
 function getReturn() {
@@ -112,11 +125,8 @@ function takeScreenshot(width) {
 			}
 		}
 	);
-	if(options.legacy)
-		return __imgCount + '.png';
-	else {
-		setReturn('![](' + __imgCount + '.png =' + width + 'x*)');
-	}
+	setReturn('![](' + __imgCount + '.png =' + width + 'x*)');
+
 }
 
 /**
@@ -127,10 +137,6 @@ function takeScreenshot(width) {
  * @return {string}             Nome da imagem gerada
  */
 function takeScreenshotOf(cssSelector, crop, outline, width) {
-	if(options.legacy) {
-		crop = parseInt(crop) == 1;
-		outline = parseInt(outline) == 1;
-	}
 	var cssSelectors;
 	if(cssSelector.constructor === Array) {
 		cssSelectors = cssSelector;
@@ -192,11 +198,8 @@ function takeScreenshotOf(cssSelector, crop, outline, width) {
 			);
 		});
 	});
-	if(options.legacy)
-		return __imgCount + '.png';
-	else {
-		setReturn('![](' + __imgCount + '.png =' + width + 'x*)');
-	}
+	setReturn('![](' + __imgCount + '.png =' + width + 'x*)');
+
 }
 
 /**
@@ -268,6 +271,13 @@ function sleep(sleepTime) {
 function wait(cssSelector, timeOut) {
 	var timeLimit = timeOut || 5000;
 	GD.driver.wait(GD.until.elementLocated(GD.by.css(cssSelector)), timeLimit);
+}
+
+function pageContext(cssSelector) {
+	if(!cssSelector || cssSelector.toString().toLowerCase() === 'default')
+		GD.driver.switchTo().defaultContent();
+	else
+		GD.driver.switchTo().frame(GD.driver.findElement(GD.by.css(cssSelector)));
 }
 
 function quit() {
