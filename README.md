@@ -237,10 +237,13 @@ Params: `<Required>` `[Optional]`
 ### takeScreenshotOf
 - Description: Take Screenshot of specific element
 - Params: `<cssSelector>`, `[crop]`, `[outline]`, `[imageWidth]`
+- Params: `Array(<cssSelector>,[cssSelector],...)`, `[crop]`, `[outline]`, `[imageWidth]`
+- Params: `Array(Array(<cssSelector>,<Iframe-CssSelector>),[cssSelector],...)`, `[crop]`, `[outline]`, `[imageWidth]`
 - Example:
   - takeScreenshotOf('#user-content-guideautomator');
   - takeScreenshotOf('#user-content-guideautomator',false,true);
-  - takeScreenshotOf(['#user-content-guideautomator','.avatar'],false,true); //Multiple cssSelector only for outline
+  - takeScreenshotOf(['#user-content-guideautomator','.avatar'],false,true); //Multiple cssSelector(only for outline)
+  - takeScreenshotOf([['#user-content-guideautomator','#frameID'],'.avatar'],false,true) //Multiple cssSelector (only for outline) on different contexts(Iframe)
 
 ### fillIn
 - Description: Fill in field element

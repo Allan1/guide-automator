@@ -15,7 +15,7 @@ var __Driver = new __webdriver.Builder()
 var __DEFAULT_IMG_WIDTH = '60%';
 var __imgCount = 0;
 var __returnGuideAutomator = "";
-
+var __DefaultContext = true;
 var GLOBAL = {};
 
 var options = {
@@ -138,6 +138,7 @@ function takeScreenshot(width) {
  */
 function takeScreenshotOf(cssSelector, crop, outline, width) {
 	var cssSelectors;
+	//Multiplos elementos
 	if(cssSelector.constructor === Array) {
 		cssSelectors = cssSelector;
 		cssSelector = cssSelectors[0];
@@ -154,6 +155,15 @@ function takeScreenshotOf(cssSelector, crop, outline, width) {
 			GD.driver.executeScript("arguments[0].style.outline = '" + options.outlineStyle + "'", el);
 			if(cssSelectors) {
 				cssSelectors.forEach(element => {
+
+					//Contexto Diferentes
+					if(element.constructor === Array) {
+						pageContext(element[1].toString());
+						element = element[0];
+					} else if(!__DefaultContext)
+						pageContext();
+					//Se não foi definido um contexto e ele está em outro contexto, volte para o default
+
 					GD.driver.findElement(GD.by.css(element)).then(function(el1) {
 						GD.driver.executeScript("arguments[0].style.outline = '" + options.outlineStyle + "'", el1);
 					});
@@ -274,10 +284,13 @@ function wait(cssSelector, timeOut) {
 }
 
 function pageContext(cssSelector) {
-	if(!cssSelector || cssSelector.toString().toLowerCase() === 'default')
+	if(!cssSelector || cssSelector.toString().toLowerCase() === 'default') {
 		GD.driver.switchTo().defaultContent();
-	else
+		__DefaultContext = true;
+	} else {
 		GD.driver.switchTo().frame(GD.driver.findElement(GD.by.css(cssSelector)));
+		__DefaultContext = false;
+	}
 }
 
 function quit() {
