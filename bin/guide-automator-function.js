@@ -16,7 +16,7 @@ var __DEFAULT_IMG_WIDTH = '60%';
 var __imgCount = 0;
 var __returnGuideAutomator = "";
 var __DefaultContext = true;
-var GLOBAL = {};
+var GDGLOBAL = {};
 
 var options = {
 	output: "",
@@ -57,7 +57,8 @@ var sandbox = {
 	quit: quit,
 	getReturn: getReturn,
 	console: console,
-	pageContext: pageContext
+	pageContext: pageContext,
+	GDGLOBAL:GDGLOBAL
 };
 
 function setReturn(msg) {
