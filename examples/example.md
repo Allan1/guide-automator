@@ -6,7 +6,7 @@
 
 ```javascript
 //Declare global variable
-GLOBAL["SITE"] = 'github';
+GDGLOBAL["SITE"] = 'github';
 
   //Access url
   get('https://github.com/');
@@ -38,7 +38,7 @@ To create new account, click on 'Sign Up' or fill in the form's fields.
   fillIn('#user_password','SuperSecretPassword');
 
   //Print text on markdown file
-  console.print('_PS:_ If you agreeing with '+GLOBAL["SITE"]+
+  console.print('_PS:_ If you agreeing with '+GDGLOBAL["SITE"]+
   ' terms, you can click on "Create an account"');
 
   takeScreenshotOf('#signup_button',false,true);

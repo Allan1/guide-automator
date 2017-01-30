@@ -16,7 +16,7 @@ var __DEFAULT_IMG_WIDTH = '60%';
 var __imgCount = 0;
 var __returnGuideAutomator = "";
 var __DefaultContext = true;
-var GLOBAL = {};
+var GDGLOBAL = {};
 
 var options = {
 	output: "",
@@ -57,7 +57,8 @@ var sandbox = {
 	quit: quit,
 	getReturn: getReturn,
 	console: console,
-	pageContext: pageContext
+	pageContext: pageContext,
+	GDGLOBAL: GDGLOBAL
 };
 
 function setReturn(msg) {
@@ -107,19 +108,19 @@ function takeScreenshot(width) {
 	width = width || __DEFAULT_IMG_WIDTH;
 	var localImageName = __imgCount; //Tratamento devido procedimentos async
 
-	if(options.debug)
+	if (options.debug)
 		console.time("Screenshot " + localImageName);
 
 	GD.driver.takeScreenshot().then(
 		function(image, err) {
-			if(err) {
+			if (err) {
 				throw err;
 			} else {
 				__fs.writeFile(options.output + '/' + localImageName + '.png', image, 'base64', function(err) {
-					if(err)
+					if (err)
 						throw err;
 
-					if(options.debug)
+					if (options.debug)
 						console.timeEnd("Screenshot " + localImageName);
 				});
 			}
@@ -139,7 +140,7 @@ function takeScreenshot(width) {
 function takeScreenshotOf(cssSelector, crop, outline, width) {
 	var cssSelectors;
 	//Multiplos elementos
-	if(cssSelector.constructor === Array) {
+	if (cssSelector.constructor === Array) {
 		cssSelectors = cssSelector;
 		cssSelector = cssSelectors[0];
 	}
@@ -147,26 +148,26 @@ function takeScreenshotOf(cssSelector, crop, outline, width) {
 	width = width || __DEFAULT_IMG_WIDTH;
 	var localImageName = __imgCount; //Tratamento devido procedimentos async
 
-	if(options.debug)
+	if (options.debug)
 		console.time("ScreenshotOF " + localImageName);
 
 	GD.driver.findElement(GD.by.css(cssSelector)).then(function(el) {
-		if(outline) {
+		if (outline) {
 			GD.driver.executeScript("arguments[0].style.outline = '" + options.outlineStyle + "'", el);
-			if(cssSelectors) {
+			if (cssSelectors) {
 				cssSelectors.forEach(element => {
 
 					//Contexto Diferentes
-					if(element.constructor === Array) {
+					if (element.constructor === Array) {
 						pageContext(element[1].toString());
 						element = element[0];
-					} else if(!__DefaultContext)
+					} else if (!__DefaultContext)
 						pageContext();
 					//Se não foi definido um contexto e ele está em outro contexto, volte para o default
 
 					GD.driver.findElement(GD.by.css(element)).then(function(el1) {
 						GD.driver.executeScript("arguments[0].style.outline = '" + options.outlineStyle + "'", el1);
-					});
+					}, ownFunctionException);
 				});
 			}
 		}
@@ -174,40 +175,40 @@ function takeScreenshotOf(cssSelector, crop, outline, width) {
 		GD.driver.executeScript("return arguments[0].getBoundingClientRect()", el).then(function(rect) {
 			GD.driver.takeScreenshot().then(
 				function(image, err) {
-					if(outline) {
+					if (outline) {
 						GD.driver.executeScript("arguments[0].style.outline = ''", el);
-						if(cssSelectors) {
+						if (cssSelectors) {
 							cssSelectors.forEach(element => {
 								GD.driver.findElement(GD.by.css(element)).then(function(el1) {
 									GD.driver.executeScript("arguments[0].style.outline = ''", el1);
-								});
+								}, ownFunctionException);
 							});
 						}
 					}
-					if(crop) {
+					if (crop) {
 						var img = new Buffer(image, 'base64');
 						__gm(img)
 							.crop(rect.width, rect.height, rect.left, rect.top)
 							.write(options.output + '/' + localImageName + '.png', function(err) {
-								if(err)
+								if (err)
 									throw err;
 
-								if(options.debug)
+								if (options.debug)
 									console.timeEnd("ScreenshotOF " + localImageName);
 							});
 					} else {
 						__fs.writeFile(options.output + '/' + localImageName + '.png', image, 'base64', function(err) {
-							if(err)
+							if (err)
 								throw err;
 
-							if(options.debug)
+							if (options.debug)
 								console.timeEnd("ScreenshotOF " + localImageName);
 						});
 					}
 				}
 			);
 		});
-	});
+	}, ownFunctionException);
 	setReturn('![](' + __imgCount + '.png =' + width + 'x*)');
 
 }
@@ -219,8 +220,12 @@ function takeScreenshotOf(cssSelector, crop, outline, width) {
  * @return {none}
  */
 function fillIn(cssSelector, text) {
-	GD.driver.findElement(GD.by.css(cssSelector)).clear();
-	GD.driver.findElement(GD.by.css(cssSelector)).sendKeys(text);
+	GD.driver.findElement(GD.by.css(cssSelector)).then(function(el) {
+		el.clear();
+	}, ownFunctionException);
+	GD.driver.findElement(GD.by.css(cssSelector)).then(function(el) {
+		el.sendKeys(text);
+	}, ownFunctionException);
 }
 
 function getText(cssSelector) {
@@ -242,7 +247,9 @@ function getText(cssSelector) {
  * @return {none}
  */
 function submit(cssSelector) {
-	GD.driver.findElement(GD.by.css(cssSelector)).submit();
+	GD.driver.findElement(GD.by.css(cssSelector)).then(function(el) {
+		el.submit();
+	}, ownFunctionException);
 }
 
 /**
@@ -251,7 +258,9 @@ function submit(cssSelector) {
  * @return {none}
  */
 function click(cssSelector) {
-	GD.driver.findElement(GD.by.css(cssSelector)).click();
+	GD.driver.findElement(GD.by.css(cssSelector)).then(function(el) {
+		el.click();
+	}, ownFunctionException);
 }
 
 /**
@@ -260,7 +269,9 @@ function click(cssSelector) {
  * @return {none}
  */
 function clickByLinkText(text) {
-	GD.driver.findElement(GD.by.linkText(text)).click();
+	GD.driver.findElement(GD.by.linkText(text)).then(function(el) {
+		el.click();
+	}, ownFunctionException);
 }
 
 /**
@@ -280,19 +291,30 @@ function sleep(sleepTime) {
  */
 function wait(cssSelector, timeOut) {
 	var timeLimit = timeOut || 5000;
-	GD.driver.wait(GD.until.elementLocated(GD.by.css(cssSelector)), timeLimit);
+	GD.driver.wait(GD.until.elementLocated(GD.by.css(cssSelector)), timeLimit)
+		.catch(ownFunctionException);
 }
 
 function pageContext(cssSelector) {
-	if(!cssSelector || cssSelector.toString().toLowerCase() === 'default') {
+	if (!cssSelector || cssSelector.toString().toLowerCase() === 'default') {
 		GD.driver.switchTo().defaultContent();
 		__DefaultContext = true;
 	} else {
-		GD.driver.switchTo().frame(GD.driver.findElement(GD.by.css(cssSelector)));
+		GD.driver.switchTo().frame(GD.driver.findElement(GD.by.css(cssSelector)))
+			.catch(ownFunctionException);
 		__DefaultContext = false;
 	}
 }
 
 function quit() {
 	return GD.driver.quit();
+}
+
+//---AUX Functions
+function ownFunctionException(err) {
+	quit();
+
+	setTimeout(function() {
+		throw err;
+	}, 50);
 }
