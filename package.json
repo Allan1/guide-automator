@@ -19,17 +19,17 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "https://github.com/aside-ufba/guide-automator.git"
+    "url": "https://github.com/Allan1/guide-automator.git"
   },
   "bugs": {
-    "url": "https://github.com/aside-ufba/guide-automator/issues"
+    "url": "https://github.com/Allan1/guide-automator/issues"
   },
   "keywords": [
     "Automation",
     "Guide",
     "UX"
   ],
-  "homepage": "https://github.com/aside-ufba/guide-automator",
+  "homepage": "https://github.com/Allan1/guide-automator",
   "dependencies": {
     "commander": "^2.9.0",
     "express": "^4.14.0",
