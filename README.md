@@ -1,7 +1,7 @@
 # GuideAutomator
-[![npm version](https://badge.fury.io/js/guide-automator.svg)](https://badge.fury.io/js/guide-automator)
-[![Node Version Needed](https://img.shields.io/badge/node-%3E=6.9.1-brightgreen.svg)](https://nodejs.org/en/download/)
-[![Dependencies](https://david-dm.org/allan1/guide-automator.svg)](https://david-dm.org/allan1/guide-automator)
+[![](https://badge.fury.io/js/guide-automator.svg)](https://badge.fury.io/js/guide-automator)
+[![](https://img.shields.io/badge/node-%3E=6.9.1-brightgreen.svg)](https://nodejs.org/en/download/)
+[![](https://david-dm.org/allan1/guide-automator.svg)](https://david-dm.org/allan1/guide-automator)
 
 [![](https://nodei.co/npm/guide-automator.png)](https://nodei.co/npm/guide-automator/)
 > Automated User Guide Generation with Markdown
@@ -18,6 +18,8 @@
 - [Usage](#usage)
 - [Api commands](#api-commands)
 - [Using GD.driver](#using-gddriver)
+- [Author](#author)
+  - [Contributors](#contributors)
 
 ----
 ## Installation
@@ -303,4 +305,12 @@ See [raw](https://raw.githubusercontent.com/Allan1/guide-automator/master/exampl
 
 [Selenium Documentation](https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/chrome_exports_Driver.html)
 
+[back to top](#guideautomator)
+
+## Author 
+### [Allan Oliveira](https://github.com/Allan1)
+ 
+### Contributors
+ * [Welbert Serra](https://github.com/welbert)
+ 
 [back to top](#guideautomator)
