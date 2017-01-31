@@ -1,3 +1,6 @@
+## THIS REPOSITORY IS DEPRECATED
+See https://github.com/aside-ufba/guide-automator for further development
+
 # GuideAutomator
 [![](https://badge.fury.io/js/guide-automator.svg)](https://badge.fury.io/js/guide-automator)
 [![](https://img.shields.io/badge/node-%3E=6.9.1-brightgreen.svg)](https://nodejs.org/en/download/)
