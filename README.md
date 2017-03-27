@@ -36,7 +36,7 @@ GuideAutomator was proposed by professor [Rodrigo Souza](https://github.com/rodr
 
 Related publications:
 
-- [GuideAutomator: Continuous Delivery of End User Documentation](https://rodrigorgs.github.io/files/icse-nier2017-rodrigo.pdf)
+- [GuideAutomator: Continuous Delivery of End User Documentation](https://rodrigorgs.github.io/files/icse-nier2017-rodrigo.pdf) -- paper accepted at [ICSE 2017, NIER Track](http://icse2017.gatech.edu/?q=nier) (New Ideas and Emerging Results)
 - [GuideAutomator: Automated User Manual
 Generation with Markdown](https://repositorio.ufba.br/ri/bitstream/ri/20947/1/monografia-allan-versao-final.pdf) -- Allan Oliveira's bachelor thesis
 - [GuideAutomator: Automated User Manual Generation with Markdown](https://rodrigorgs.github.io/files/cbsoft2016-tools.pdf) -- paper presented at CBSoft 2016 (Tools Track)
