@@ -34,6 +34,13 @@ Corresponding output:
 
 GuideAutomator was proposed by professor [Rodrigo Souza](https://github.com/rodrigorgs) and originally implemented by [Allan Oliveira](https://github.com/rodrigorgs) as part of his [Bachelor's thesis](https://repositorio.ufba.br/ri/bitstream/ri/20947/1/monografia-allan-versao-final.pdf). The project is now being maintained by [Welbert Serra](https://github.com/welbert). The project is being developed in the context of [aSide](https://translate.google.com/translate?sl=pt&tl=en&js=y&prev=_t&hl=en&ie=UTF-8&u=http%3A%2F%2Fwiki.dcc.ufba.br%2FAside%2F&edit-text=&act=url), a research group at the [Federal University of Bahia](https://en.wikipedia.org/wiki/Federal_University_of_Bahia) specialized in software design and evolution.
 
+Related publications:
+
+- [GuideAutomator: Continuous Delivery of End User Documentation](https://rodrigorgs.github.io/files/icse-nier2017-rodrigo.pdf)
+- [GuideAutomator: Automated User Manual
+Generation with Markdown](https://repositorio.ufba.br/ri/bitstream/ri/20947/1/monografia-allan-versao-final.pdf) -- Allan Oliveira's bachelor thesis
+- [GuideAutomator: Automated User Manual Generation with Markdown](https://rodrigorgs.github.io/files/cbsoft2016-tools.pdf) -- paper presented at CBSoft 2016 (Tools Track)
+
 ---
 
 ## Summary
