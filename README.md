@@ -1,10 +1,42 @@
 # GuideAutomator
+
 [![](https://badge.fury.io/js/guide-automator.svg)](https://badge.fury.io/js/guide-automator)
 [![](https://img.shields.io/badge/node-%3E=6.9.1-brightgreen.svg)](https://nodejs.org/en/download/)
-[![](https://david-dm.org/allan1/guide-automator.svg)](https://david-dm.org/allan1/guide-automator)
+[![](https://david-dm.org/allan1/guide-automator.svg)](https://david-dm.org/aside-ufba/guide-automator)
 
 [![](https://nodei.co/npm/guide-automator.png)](https://nodei.co/npm/guide-automator/)
 > Automated User Guide Generation with Markdown
+
+GuideAutomator allows developers and technical writers to create user manuals with screenshots that are always in sync with the latest version of the application being documented. For that end, it takes as input a Markdown file containing the user manual text with short JavaScript chunks that determine how to capture each screencast.
+
+Sample GuideAutomator input:
+
+    ## How to find GuideAutomator
+
+    Open the Bing website and type `GuideAutomator aside-ufba`:
+
+    ```javascript
+    get('https://bing.com/');
+    fillIn('#sb_form_q', 'GuideAutomator aside-ufba');
+    takeScreenshotOf('#sb_form>div', true);
+    ```
+
+    Press *Enter*. The first result should be what you are looking for:
+
+    ```javascript
+    submit('#sb_form');
+    takeScreenshotOf('#b_results>li:nth-child(1)', true);
+    ```
+
+Corresponding output:
+
+![GuideAutomator output](extras/sample.png)
+
+GuideAutomator was proposed by professor [Rodrigo Souza](https://github.com/rodrigorgs) and originally implemented by [Allan Oliveira](https://github.com/rodrigorgs) as part of his [Bachelor's thesis](https://repositorio.ufba.br/ri/bitstream/ri/20947/1/monografia-allan-versao-final.pdf). The project is now being maintained by [Welbert Serra](https://github.com/welbert). The project is being developed in the context of [aSide](https://translate.google.com/translate?sl=pt&tl=en&js=y&prev=_t&hl=en&ie=UTF-8&u=http%3A%2F%2Fwiki.dcc.ufba.br%2FAside%2F&edit-text=&act=url), a research group at the [Federal University of Bahia](https://en.wikipedia.org/wiki/Federal_University_of_Bahia) specialized in software design and evolution.
+
+---
+
+## Summary
 
 - [Installation](#installation)
   - [Prerequisites](#prerequisites)
@@ -305,12 +337,4 @@ See [raw](https://raw.githubusercontent.com/Allan1/guide-automator/master/exampl
 
 [Selenium Documentation](https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/chrome_exports_Driver.html)
 
-[back to top](#guideautomator)
-
-## Author 
-### [Allan Oliveira](https://github.com/Allan1)
- 
-### Contributors
- * [Welbert Serra](https://github.com/welbert)
- 
 [back to top](#guideautomator)
