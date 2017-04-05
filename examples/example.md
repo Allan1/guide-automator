@@ -21,10 +21,10 @@ To create new account, click on 'Sign Up' or fill in the form's fields.
 
 ```javascript
   //Take screenshot of css selectors, with no crop and with outline
-  takeScreenshotOf(['a.site-header-actions-btn:nth-child(1)','.home-hero-signup'],false,true);
+  takeScreenshotOf(['a.text-bold:nth-child(4)','.col-md-5'],false,true);
 
   //Click in button 'sign out'
-  click('a.site-header-actions-btn:nth-child(1)');
+  click('button.btn');
 
   //Take screenshot of actual state
   takeScreenshot();
@@ -36,6 +36,8 @@ To create new account, click on 'Sign Up' or fill in the form's fields.
   fillIn('#user_login','PutYourUserName');
   fillIn('#user_email','yourEmail@email.com');
   fillIn('#user_password','SuperSecretPassword');
+
+  sleep(200);
 
   //Print text on markdown file
   console.print('_PS:_ If you agreeing with '+GDGLOBAL["SITE"]+
@@ -68,11 +70,11 @@ In this page, we have a extra information. Like:
 
 ```javascript
   //takeScreenshotOf with crop and height ajust
-  takeScreenshotOf('div.column:nth-child(1)',true,false,'30%');
+  takeScreenshotOf('.underline-nav',true,false,'50%');
 
   console.print('We can filter using Repositories, Code, Issues, Wikis and Users (_In this case, i wanted to search myself_)')
 
-  click('a.menu-item:nth-child(5)');
+  click('a.underline-nav-item:nth-child(6)');
   sleep(1500);
   takeScreenshot();
 
