@@ -1,6 +1,6 @@
 {
   "name": "guide-automator",
-  "version": "2.2.5",
+  "version": "2.2.6",
   "description": "User guide automator",
   "preferGlobal": true,
   "bin": {
@@ -32,12 +32,12 @@
   "homepage": "https://github.com/aside-ufba/guide-automator",
   "dependencies": {
     "commander": "^2.9.0",
-    "express": "^4.14.0",
+    "express": "^4.15.2",
     "gm": "^1.23.0",
-    "selenium-webdriver": "3.0.1",
-    "showdown": "^1.6.1",
-    "vm2": "3.1.0",
-    "wkhtmltopdf": "^0.3.3"
+    "selenium-webdriver": "3.3.0",
+    "showdown": "^1.6.4",
+    "vm2": "3.4.6",
+    "wkhtmltopdf": "^0.3.4"
   },
   "engines": {
     "node": "~6.9.1",
