@@ -1,7 +1,8 @@
 var options = {
 	output: "",
 	outlineStyle: "solid red 3px",
-	debug: false
+	debug: false,
+	autosleep: 200
 };
 
 module.exports = {
@@ -32,14 +33,14 @@ function guideAutomatorParser(mdText, cb) {
 	guideAutomator.defineOptions(options);
 
 	return extractJavascript(mdText, function(err, javascriptBlocks) {
-		if(err)
+		if (err)
 			throw err;
 		return executeJavascriptSelenium(javascriptBlocks, function(err) {
-			if(err)
+			if (err)
 				throw err;
 
 			guideAutomator.quit().then(function() {
-				if(options.debug) {
+				if (options.debug) {
 					console.log("");
 					console.timeEnd('Selenium');
 				}
@@ -58,7 +59,7 @@ function replaceBlockWithJsStdout(blockIndex, jsStdout) {
 	var index = 0;
 	markdownText = markdownText.replace(/<replaceSelenium>/g, function(match) {
 		index++;
-		if((index - 1) === blockIndex) {
+		if ((index - 1) === blockIndex) {
 			return '<replaceSelenium>' + jsStdout;
 		}
 		return match;
@@ -75,13 +76,13 @@ function extractJavascript(markdownAndCode, cb) {
 }
 
 function executeJavascriptSelenium(markdownText, cb) {
-	if(options.debug) {
+	if (options.debug) {
 		console.log(`File's JSBlocks: ` + seleniumBlocks.length);
 		console.log("");
 		console.time('Selenium');
 	}
 
-	for(var n_block = 0; n_block < seleniumBlocks.length; n_block++) {
+	for (var n_block = 0; n_block < seleniumBlocks.length; n_block++) {
 		guideAutomator.executeExternFunction(seleniumBlocks[n_block]);
 		var jsStdout = guideAutomator.getReturn();
 		replaceBlockWithJsStdout(n_block, jsStdout);

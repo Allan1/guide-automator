@@ -13,7 +13,8 @@ var options = {
 	pdf: false,
 	/* If true, only image will be export */
 	image: false,
-	style: 'default'
+	style: 'default',
+	autosleep: 200
 };
 var pjson = require('./package.json');
 var program = require('commander');
@@ -28,11 +29,11 @@ exports.defineOptions = function(arg) {
 		});
 };
 exports.generateManual = function(text) {
-	if(!text)
+	if (!text)
 		throw "Text input is missing";
 
 	return guideAutomator.guideAutomatorParser(text, function(value, err) {
-		if(err)
+		if (err)
 			throw err;
 		guideAutomatorExportFile.exportFiles(value);
 	});
@@ -50,6 +51,7 @@ program.version(pjson.version)
 	.option('-H, --html', 'Export manual to HTML, default is export for all types', false)
 	.option('-I, --image', `Export ONLY manual's image and ignore others types, default is export for all types`, false)
 	.option('-s, --style <style.css>', 'Css style to be used in the manual or theme [' + themeList.toString() + ']')
+	.option('-t, --autosleep <Millisecond>', 'Time to sleep before screenshot', 200)
 	.option('-d, --debug', 'Show progress of code');
 
 program.on('--help', function() {
@@ -63,7 +65,7 @@ program.on('--help', function() {
 
 program.parse(process.argv);
 
-if(program.debug) {
+if (program.debug) {
 	console.log("Version: " + pjson.version);
 	console.log("Options Used.:");
 }
@@ -71,35 +73,35 @@ if(program.debug) {
 Object.keys(options)
 	.forEach(function(key) {
 		options[key] = program[key] || options[key];
-		if(options.debug)
+		if (options.debug)
 			console.log("	" + key + ": " + options[key].toString());
 	});
 
-if(options.debug) {
+if (options.debug) {
 	console.log("--------");
 	console.time("Guide-Automator");
 }
 
 
 //if image, others exports type are ignored
-if(options.image)
+if (options.image)
 	options.pdf = options.html = false;
 else {
 	//if all exports type are false, change to true all
-	if(!options.pdf && !options.html)
+	if (!options.pdf && !options.html)
 		options.pdf = options.html = true;
 }
 
-if(!options.input) {
+if (!options.input) {
 	console.log('Input file missing. See usage with "' + program._name + ' -h"');
 	process.exit();
 }
 
-if(!fs.existsSync(options.input) || !fs.lstatSync(options.input).isFile()) {
+if (!fs.existsSync(options.input) || !fs.lstatSync(options.input).isFile()) {
 	console.log('Input is not a file');
 	process.exit();
 }
-if(!fs.lstatSync(options.output).isDirectory()) {
+if (!fs.lstatSync(options.output).isDirectory()) {
 	console.log('Output is not a folder');
 	process.exit();
 }
@@ -115,21 +117,21 @@ guideAutomatorExportFile.defineOptions(options);
 
 //-- Tratamento dos blocos 'automator'-----
 processInput(options.input, function(err) {
-	if(err) {
+	if (err) {
 		throw err;
 	}
 });
 
 function processInput(input, cb) {
 	fs.readFile(input, 'utf8', (err, data) => { //Leitura do arquivo
-		if(err)
+		if (err)
 			return cb(err);
 
-		if(options.debug)
+		if (options.debug)
 			console.log(`File's line: ` + data.split(/\r\n|\r|\n/).length);
 
 		return guideAutomator.guideAutomatorParser(data, function(value, err) {
-			if(err)
+			if (err)
 				throw err;
 			guideAutomatorExportFile.exportFiles(value);
 		});

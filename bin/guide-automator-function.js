@@ -21,7 +21,8 @@ var GDGLOBAL = {};
 var options = {
 	output: "",
 	outlineStyle: "solid red 3px",
-	debug: false
+	debug: false,
+	autosleep: 200
 };
 
 var GD = {
@@ -108,6 +109,7 @@ function takeScreenshot(width) {
 	width = width || __DEFAULT_IMG_WIDTH;
 	var localImageName = __imgCount; //Tratamento devido procedimentos async
 
+	sleep(options.autosleep);
 	if (options.debug)
 		console.time("Screenshot " + localImageName);
 
@@ -148,6 +150,7 @@ function takeScreenshotOf(cssSelector, crop, outline, width) {
 	width = width || __DEFAULT_IMG_WIDTH;
 	var localImageName = __imgCount; //Tratamento devido procedimentos async
 
+	sleep(options.autosleep);
 	if (options.debug)
 		console.time("ScreenshotOF " + localImageName);
 
