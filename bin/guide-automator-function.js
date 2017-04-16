@@ -8,8 +8,16 @@ var __gm = require('gm').subClass({
 var __webdriver = require('selenium-webdriver'),
 	__by = require('selenium-webdriver').By,
 	__until = require('selenium-webdriver').until;
+
+var __chrome = require('selenium-webdriver/chrome');
+var __co = new __chrome.Options();
+// for headless to work, you'll need Chrome M59 or newer (currently available on Canary)
+// __co.setChromeBinaryPath("/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary"); // for macOS
+__co.addArguments(['--headless', '--disable-gpu']); // screen capture doesn't seem to work when running headless
+
 var __Driver = new __webdriver.Builder()
 	.forBrowser('chrome')
+	.setChromeOptions(__co)
 	.build();
 
 var __DEFAULT_IMG_WIDTH = '60%';
