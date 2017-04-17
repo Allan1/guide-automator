@@ -2,7 +2,8 @@ var options = {
 	output: "",
 	outlineStyle: "solid red 3px",
 	debug: false,
-	autosleep: 200
+	autosleep: 200,
+	headless: false
 };
 
 module.exports = {

@@ -8,9 +8,8 @@ var __gm = require('gm').subClass({
 var __webdriver = require('selenium-webdriver'),
 	__by = require('selenium-webdriver').By,
 	__until = require('selenium-webdriver').until;
-var __Driver = new __webdriver.Builder()
-	.forBrowser('chrome')
-	.build();
+
+var __Driver = null;
 
 var __DEFAULT_IMG_WIDTH = '60%';
 var __imgCount = 0;
@@ -22,11 +21,34 @@ var options = {
 	output: "",
 	outlineStyle: "solid red 3px",
 	debug: false,
-	autosleep: 200
+	autosleep: 200,
+	headless: false
 };
 
 var GD = {
 	get driver() {
+		if (__Driver == null) {
+			let __chrome = require('selenium-webdriver/chrome');
+			let __co = new __chrome.Options();
+
+			console.log(options);
+
+			if (options.headless) {
+				// for headless to work, you'll need Chrome M59 or newer (currently only available on Canary)
+				let macosPath = "/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary";
+				if (__fs.existsSync(macosPath)) {
+					__co.setChromeBinaryPath(macosPath);
+				} else {
+					__co.setChromeBinaryPath("/usr/bin/google-chrome-unstable");
+				}
+				__co.addArguments(['--headless', '--disable-gpu']); // screen capture doesn't seem to work when running headless
+			}
+
+			__Driver = new __webdriver.Builder()
+				.forBrowser('chrome')
+				.setChromeOptions(__co)
+				.build();
+		}
 		return __Driver;
 	},
 	get until() {
