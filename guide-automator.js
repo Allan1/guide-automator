@@ -14,7 +14,8 @@ var options = {
 	/* If true, only image will be export */
 	image: false,
 	style: 'default',
-	autosleep: 200
+	autosleep: 200,
+	headless: false
 };
 var pjson = require('./package.json');
 var program = require('commander');
@@ -52,7 +53,8 @@ program.version(pjson.version)
 	.option('-I, --image', `Export ONLY manual's image and ignore others types, default is export for all types`, false)
 	.option('-s, --style <style.css>', 'Css style to be used in the manual or theme [' + themeList.toString() + ']')
 	.option('-t, --autosleep <Millisecond>', 'Time to sleep before screenshot', 200)
-	.option('-d, --debug', 'Show progress of code');
+	.option('-d, --debug', 'Show progress of code')
+	.option('-l, --headless', 'Use headless Chrome (does not require a GUI)', false);
 
 program.on('--help', function() {
 	console.log('  Examples:');
@@ -111,7 +113,6 @@ var guideAutomatorExportFile = require('./bin/guide-automator-export');
 
 guideAutomator.defineOptions(options);
 guideAutomatorExportFile.defineOptions(options);
-
 
 //-- Fim Tratamento de Argumentos --------
 
