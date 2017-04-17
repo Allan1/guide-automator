@@ -31,8 +31,6 @@ var GD = {
 			let __chrome = require('selenium-webdriver/chrome');
 			let __co = new __chrome.Options();
 
-			console.log(options);
-
 			if (options.headless) {
 				// for headless to work, you'll need Chrome M59 or newer (currently only available on Canary)
 				let macosPath = "/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary";
