@@ -32,12 +32,22 @@ var GD = {
 			let __co = new __chrome.Options();
 
 			if (options.headless) {
+				let OS = process.platform;
 				// for headless to work, you'll need Chrome M59 or newer (currently only available on Canary)
-				let macosPath = "/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary";
-				if (__fs.existsSync(macosPath)) {
-					__co.setChromeBinaryPath(macosPath);
-				} else {
-					__co.setChromeBinaryPath("/usr/bin/google-chrome-unstable");
+
+				switch (OS) {
+					case "darwin":
+						__co.setChromeBinaryPath("/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary");
+						break;
+					case "linux":
+						//Não é preciso, testados em ultimas versões do Chrome e Chromium
+						//__co.setChromeBinaryPath("/usr/bin/google-chrome-unstable");
+						break;
+
+					case "win32":
+						break;
+					default:
+						break;
 				}
 				__co.addArguments(['--headless', '--disable-gpu']); // screen capture doesn't seem to work when running headless
 			}
