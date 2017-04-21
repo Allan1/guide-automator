@@ -221,7 +221,8 @@ $ guide-automator -h
     -I, --image            Export ONLY manual's image and ignore others types, default is export for all types
     -s, --style <style.css>  Css style to be used in the manual or theme [lightBlue,lightOrange]
     -t, --autosleep <Millisecond>  Time to sleep before screenshot
-    -d, --debug              Show progress of code
+    -d, --debug            Show progress of code
+    -l, --headless         Use headless Chrome (does not require a GUI)
 
   Examples:
 

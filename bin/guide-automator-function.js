@@ -40,11 +40,12 @@ var GD = {
 						__co.setChromeBinaryPath("/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary");
 						break;
 					case "linux":
-						//Não é preciso, testados em ultimas versões do Chrome e Chromium
+						//No need, tested on latest versions of chrome and chromium
 						//__co.setChromeBinaryPath("/usr/bin/google-chrome-unstable");
 						break;
 
 					case "win32":
+							console.log("Warning: Headless on Windows doesn't works propery.");
 						break;
 					default:
 						break;
