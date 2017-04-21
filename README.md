@@ -76,7 +76,7 @@ Generation with Markdown](https://repositorio.ufba.br/ri/bitstream/ri/20947/1/mo
   - (Option 1)You can install with script
 
     ```coffeescript
-    sudo wget -qO- https://raw.githubusercontent.com/welbert/guide-automator/master/install_linux.sh | bash -
+    sudo wget -qO- https://raw.githubusercontent.com/aside-ufba/guide-automator/master/install_linux.sh | bash -
     ```
 
   - (Option 2) Manual installation. You need install some binary dependencies.

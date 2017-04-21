@@ -53,9 +53,9 @@ if ! (is_executable chromedriver) ; then
   echo " # Installing Dependencie CHROMEDRIVER"
   case $( uname -m ) in
   x86_64)
-    wget https://chromedriver.storage.googleapis.com/2.25/chromedriver_linux64.zip -O chromedriver.zip;;
+    wget https://chromedriver.storage.googleapis.com/2.29/chromedriver_linux64.zip -O chromedriver.zip;;
   *)
-    wget https://chromedriver.storage.googleapis.com/2.25/chromedriver_linux32.zip -O chromedriver.zip;;
+    wget https://chromedriver.storage.googleapis.com/2.29/chromedriver_linux32.zip -O chromedriver.zip;;
   esac
 
   unzip chromedriver.zip
