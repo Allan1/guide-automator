@@ -15,6 +15,7 @@ var options = {
 	image: false,
 	style: 'default',
 	autosleep: 200,
+	browser: null,
 	headless: false,
 	window: null
 };
@@ -55,6 +56,7 @@ program.version(pjson.version)
 	.option('-s, --style <style.css>', 'Css style to be used in the manual or theme [' + themeList.toString() + ']')
 	.option('-t, --autosleep <Millisecond>', 'Time to sleep before screenshot', 200)
 	.option('-d, --debug', 'Show progress of code')
+	.option('-b, --browser <path>', 'Use Chromium browser at given path')
 	.option('-l, --headless', 'Use headless Chrome (does not require a GUI)', false)
 	.option('-w, --window <dimensions>', 'Set browser window\'s dimensions (e.g., 800x600)');
 

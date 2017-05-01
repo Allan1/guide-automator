@@ -22,6 +22,7 @@ var options = {
 	outlineStyle: "solid red 3px",
 	debug: false,
 	autosleep: 200,
+	browser: null,
 	headless: false,
 	window: null
 };
@@ -33,25 +34,11 @@ var GD = {
 			let __co = new __chrome.Options();
 
 			if (options.headless) {
-				let OS = process.platform;
-				// for headless to work, you'll need Chrome M59 or newer (currently only available on Canary)
-
-				switch (OS) {
-					case "darwin":
-						__co.setChromeBinaryPath("/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary");
-						break;
-					case "linux":
-						//No need, tested on latest versions of chrome and chromium
-						//__co.setChromeBinaryPath("/usr/bin/google-chrome-unstable");
-						break;
-
-					case "win32":
-							console.log("Warning: Headless on Windows doesn't works propery.");
-						break;
-					default:
-						break;
-				}
-				__co.addArguments(['--headless', '--disable-gpu']); // screen capture doesn't seem to work when running headless
+				__co.addArguments(['--headless', '--disable-gpu']);
+				console.log('You may need to set up --browser=<path/to/chrome-canary> for headless to work.');
+			}
+			if (options.browser) {
+				__co.setChromeBinaryPath(options.browser);
 			}
 
 			__Driver = new __webdriver.Builder()

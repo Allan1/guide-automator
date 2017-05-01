@@ -3,6 +3,7 @@ var options = {
 	outlineStyle: "solid red 3px",
 	debug: false,
 	autosleep: 200,
+	browser: null,
 	headless: false,
 	window: null
 };

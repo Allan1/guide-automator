@@ -222,8 +222,9 @@ $ guide-automator -h
     -s, --style <style.css>  Css style to be used in the manual or theme [lightBlue,lightOrange]
     -t, --autosleep <Millisecond>  Time to sleep before screenshot
     -d, --debug            Show progress of code
+    -b, --browser <path>   Use Chromium browser at given path
     -l, --headless         Use headless Chrome (does not require a GUI)
-    -w, --window <dimensions>      Set browser window's dimensions (e.g., 800x600)
+    -w, --window <dimensions>  Set browser window's dimensions (e.g., 800x600)
 
   Examples:
 
