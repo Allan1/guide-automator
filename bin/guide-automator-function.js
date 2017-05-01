@@ -22,7 +22,8 @@ var options = {
 	outlineStyle: "solid red 3px",
 	debug: false,
 	autosleep: 200,
-	headless: false
+	headless: false,
+	window: null
 };
 
 var GD = {
@@ -57,6 +58,18 @@ var GD = {
 				.forBrowser('chrome')
 				.setChromeOptions(__co)
 				.build();
+
+			if (options.window) {
+				let dimensions = options.window.split(/[xX+]/);
+				if (dimensions.length >= 2) {
+					__Driver.manage().window().setSize(+dimensions[0], +dimensions[1]);
+					if (dimensions.length >= 4) {
+						__Driver.manage().window().setPosition(+dimensions[2], +dimensions[3]);
+					}
+				} else {
+					console.error('Invalid dimensions:', options.window);
+				}
+			}
 		}
 		return __Driver;
 	},

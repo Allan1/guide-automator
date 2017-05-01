@@ -15,7 +15,8 @@ var options = {
 	image: false,
 	style: 'default',
 	autosleep: 200,
-	headless: false
+	headless: false,
+	window: null
 };
 var pjson = require('./package.json');
 var program = require('commander');
@@ -54,7 +55,8 @@ program.version(pjson.version)
 	.option('-s, --style <style.css>', 'Css style to be used in the manual or theme [' + themeList.toString() + ']')
 	.option('-t, --autosleep <Millisecond>', 'Time to sleep before screenshot', 200)
 	.option('-d, --debug', 'Show progress of code')
-	.option('-l, --headless', 'Use headless Chrome (does not require a GUI)', false);
+	.option('-l, --headless', 'Use headless Chrome (does not require a GUI)', false)
+	.option('-w, --window <dimensions>', 'Set browser window\'s dimensions (e.g., 800x600)');
 
 program.on('--help', function() {
 	console.log('  Examples:');

@@ -223,6 +223,7 @@ $ guide-automator -h
     -t, --autosleep <Millisecond>  Time to sleep before screenshot
     -d, --debug            Show progress of code
     -l, --headless         Use headless Chrome (does not require a GUI)
+    -w, --window <dimensions>      Set browser window's dimensions (e.g., 800x600)
 
   Examples:
 
