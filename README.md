@@ -11,22 +11,24 @@ GuideAutomator allows developers and technical writers to create user manuals wi
 
 Sample GuideAutomator input:
 
-    ## How to find GuideAutomator
+```js
+## How to find GuideAutomator
 
-    Open the Bing website and type `GuideAutomator aside-ufba`:
+Open the Bing website and type `GuideAutomator aside-ufba`:
 
-    ```javascript
-    get('https://bing.com/');
-    fillIn('#sb_form_q', 'GuideAutomator aside-ufba');
-    takeScreenshotOf('#sb_form>div', true);
-    ```
+```js
+get('https://bing.com/');
+fillIn('#sb_form_q', 'GuideAutomator aside-ufba');
+takeScreenshotOf('#sb_form>div', true);
+```
 
-    Press *Enter*. The first result should be what you are looking for:
+Press *Enter*. The first result should be what you are looking for:
 
-    ```javascript
-    submit('#sb_form');
-    takeScreenshotOf('#b_results>li:nth-child(1)', true);
-    ```
+```js
+submit('#sb_form');
+takeScreenshotOf('#b_results>li:nth-child(1)', true);
+```
+```
 
 Corresponding output:
 
@@ -148,7 +150,7 @@ Generation with Markdown](https://repositorio.ufba.br/ri/bitstream/ri/20947/1/mo
 ---
 
 #### Description
-Guide-automator extract javascript tags (\`\`\`javascript guide-automator commands \`\`\`) from markdown file and generate manual from them. You need use our [API commands](#api-commands) in markdown file.
+Guide-automator extract `javascript` or `js` tags (\`\`\`javascript guide-automator commands \`\`\` or \`\`\`js guide-automator commands \`\`\`) from markdown file and generate manual from them. You need use our [API commands](#api-commands) in markdown file.
 
 [back to top](#guideautomator)
 
@@ -156,7 +158,7 @@ Guide-automator extract javascript tags (\`\`\`javascript guide-automator comman
 ```
 # This is my github
 
-```javascript
+```js
   get('https://github.com/welbert');
   takeScreenshot();
   takeScreenshotOf('.avatar',false,true);

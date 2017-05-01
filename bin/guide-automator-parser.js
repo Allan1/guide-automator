@@ -70,7 +70,7 @@ function replaceBlockWithJsStdout(blockIndex, jsStdout) {
 }
 
 function extractJavascript(markdownAndCode, cb) {
-	var rePattern = /```javascript([\s\S]+?)```/g;
+	var rePattern = /```(?:javascript|js)([\s\S]+?)```/g;
 	markdownText = markdownAndCode.replace(rePattern, function(match, p1, offset, string) {
 		seleniumBlocks.push(p1);
 		return '<replaceSelenium>';
