@@ -243,6 +243,7 @@ Params: `<Required>` `[Optional]`
 - [get](#get)
 - [click](#click)
 - [clickByLinkText](#clickbylinktext)
+- [highlight](#highlight)
 - [takeScreenshot](#takescreenshot)
 - [takeScreenshotOf](#takescreenshotof)
 - [fillIn](#fillin)
@@ -269,6 +270,13 @@ Params: `<Required>` `[Optional]`
 - Params: `<linkText>`
 - Example:
   - clickByLinkText('README.md');
+
+### highlight
+- Description: Highlights an HTML element by adding a red outline
+- Params: `<cssSelector>`
+- Example:
+  - highlight('.header-search-input');
+  - highlight(['.header-search-input', '#frameID']);
 
 ### takeScreenshot
 - Description: Take Screenshot

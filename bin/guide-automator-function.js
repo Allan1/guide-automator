@@ -80,6 +80,7 @@ var sandbox = {
 	get: get,
 	takeScreenshot: takeScreenshot,
 	takeScreenshotOf: takeScreenshotOf,
+	highlight: highlight,
 	fillIn: fillIn,
 	submit: submit,
 	click: click,
@@ -161,6 +162,36 @@ function takeScreenshot(width) {
 	);
 	setReturn('![](' + __imgCount + '.png =' + width + 'x*)');
 
+}
+
+/**
+ * Highlights an HTML element by adding a red outline.
+ * @param  {string} cssSelector Element's CSS selector. It can also be an array of CSS selectors for multiple highlights.
+ */
+function highlight(cssSelector) {
+	var cssSelectors;
+	if (cssSelector.constructor === Array) {
+		cssSelectors = cssSelector;
+		cssSelector = cssSelectors[0];
+	}
+	GD.driver.findElement(GD.by.css(cssSelector)).then(function(el) {
+		GD.driver.executeScript("arguments[0].style.outline = '" + options.outlineStyle + "'", el);
+		if (cssSelectors) {
+			cssSelectors.forEach(element => {
+
+				if (element.constructor === Array) {
+					pageContext(element[1].toString());
+					element = element[0];
+				} else if (!__DefaultContext) {
+					pageContext();
+				}
+
+				GD.driver.findElement(GD.by.css(element)).then(function(el1) {
+					GD.driver.executeScript("arguments[0].style.outline = '" + options.outlineStyle + "'", el1);
+				}, ownFunctionException);
+			});
+		}
+	}, ownFunctionException);
 }
 
 /**
