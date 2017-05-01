@@ -11,24 +11,22 @@ GuideAutomator allows developers and technical writers to create user manuals wi
 
 Sample GuideAutomator input:
 
-```javascript
-## How to find GuideAutomator
+    ## How to find GuideAutomator
 
-Open the Bing website and type `GuideAutomator aside-ufba`:
+    Open the Bing website and type `GuideAutomator aside-ufba`:
 
-\`\`\`js
-get('https://bing.com/');
-fillIn('#sb_form_q', 'GuideAutomator aside-ufba');
-takeScreenshotOf('#sb_form>div', true);
-\`\`\`
+    ```js
+    get('https://bing.com/');
+    fillIn('#sb_form_q', 'GuideAutomator aside-ufba');
+    takeScreenshotOf('#sb_form>div', true);
+    ```
 
-Press *Enter*. The first result should be what you are looking for:
+    Press *Enter*. The first result should be what you are looking for:
 
-\`\`\`js
-submit('#sb_form');
-takeScreenshotOf('#b_results>li:nth-child(1)', true);
-\`\`\`
-```
+    ```js
+    submit('#sb_form');
+    takeScreenshotOf('#b_results>li:nth-child(1)', true);
+    ```
 
 Corresponding output:
 
