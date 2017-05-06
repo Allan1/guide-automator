@@ -15,9 +15,9 @@ var options = {
 	image: false,
 	style: 'default',
 	autosleep: 200,
-	browser: null,
+	browser: "",
 	headless: false,
-	window: null
+	window: ""
 };
 var pjson = require('./package.json');
 var program = require('commander');
